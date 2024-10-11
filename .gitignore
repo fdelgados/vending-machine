@@ -1,0 +1,6 @@
+/db_data/
+/.idea/
+/vendor/
+.phpunit.result.cache
+vending-machine.iml
+.DS_Store

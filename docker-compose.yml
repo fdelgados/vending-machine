@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vending-machine-app
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      - db
+    networks:
+      - vending-machine-network
+    command: tail -f /dev/null
+
+  db:
+    image: mysql:8.0
+    container_name: vending-machine-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - vending-machine-network
+
+volumes:
+  db_data:
+
+networks:
+  vending-machine-network:

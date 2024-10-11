@@ -1,0 +1,32 @@
+{
+    "name": "fdelgado/vending-machine",
+    "description": "Vending machine",
+    "type": "project",
+    "require": {
+        "php": "^8.3",
+        "symfony/console": "6.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "VendingMachine\\Common\\": "app/common/src/",
+            "VendingMachine\\Maintenance\\": "app/maintenance/src/",
+            "VendingMachine\\Operation\\": "app/operation/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\VendingMachine\\Common\\": "app/common/tests/",
+            "Tests\\VendingMachine\\Maintenance\\": "app/maintenance/tests/",
+            "Tests\\VendingMachine\\Operation\\": "app/operation/tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Cisco Delgado",
+            "email": "fdelgados@gmail.com"
+        }
+    ]
+}
