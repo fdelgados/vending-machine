@@ -16,7 +16,7 @@
             "VendingMachine\\Operation\\": "app/operation/src/"
         },
         "files": [
-            "app/lib/utils.php"
+            "lib/utils.php"
         ]
     },
     "autoload-dev": {
@@ -26,7 +26,7 @@
             "Tests\\VendingMachine\\Operation\\": "app/operation/tests/"
         },
         "files": [
-            "app/lib/testing/helpers.php"
+            "lib/testing/helpers.php"
         ]
     },
     "authors": [
