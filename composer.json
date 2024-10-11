@@ -14,14 +14,20 @@
             "VendingMachine\\Common\\": "app/common/src/",
             "VendingMachine\\Maintenance\\": "app/maintenance/src/",
             "VendingMachine\\Operation\\": "app/operation/src/"
-        }
+        },
+        "files": [
+            "app/lib/utils.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
             "Tests\\VendingMachine\\Common\\": "app/common/tests/",
             "Tests\\VendingMachine\\Maintenance\\": "app/maintenance/tests/",
             "Tests\\VendingMachine\\Operation\\": "app/operation/tests/"
-        }
+        },
+        "files": [
+            "app/lib/testing/helpers.php"
+        ]
     },
     "authors": [
         {
