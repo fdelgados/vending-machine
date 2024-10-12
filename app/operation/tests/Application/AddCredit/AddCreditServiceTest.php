@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Operation\Application\AddCredit\AddCreditCommand;
 use VendingMachine\Operation\Application\AddCredit\AddCreditService;
+use VendingMachine\Operation\Domain\Model\Credit;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;
 
 final class AddCreditServiceTest extends TestCase
@@ -29,8 +30,8 @@ final class AddCreditServiceTest extends TestCase
         $result = $this->addCreditService->add($command);
 
         self::assertTrue($result->isSuccess());
-        self::assertIsFloat($result->getValue());
-        self::assertGreaterThan(0.0, $result->getValue());
+        self::assertInstanceOf(Credit::class, $result->getValue());
+        self::assertTrue($result->getValue()->greaterThan(Credit::zero()));
     }
 
     public static function validCommands(): array

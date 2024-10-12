@@ -3,14 +3,18 @@
 namespace VendingMachine\Operation\Domain\Model;
 
 use DateTimeImmutable;
+use VendingMachine\Common\Result;
+use VendingMachine\Operation\Domain\Errors;
+use VendingMachine\Operation\Domain\Model\Product\Product;
 
 final class Sale
 {
     private readonly SaleId $id;
     private readonly DateTimeImmutable $startedAt;
     private array $coins;
-    private float $credit;
+    private Credit $credit;
     private SaleState $state;
+    private ?Product $product;
 
     public function __construct(SaleId $saleId)
     {
@@ -18,7 +22,8 @@ final class Sale
         $this->startedAt = new DateTimeImmutable();
         $this->state = SaleState::IN_PROGRESS;
         $this->coins = [];
-        $this->credit = 0.0;
+        $this->credit = new Credit(0.0);
+        $this->product = null;
     }
 
     public function getId(): SaleId
@@ -31,10 +36,10 @@ final class Sale
         precondition($this->state->isInProgress(), 'The sale is not in progress credits cannot be added.');
 
         $this->coins[] = $coin;
-        $this->credit += $coin->getValue();
+        $this->credit = $this->credit->sum($coin->getValue());
     }
 
-    public function getCredit(): float
+    public function getCredit(): Credit
     {
         return $this->credit;
     }
