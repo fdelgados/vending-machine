@@ -55,7 +55,7 @@ final class AddCreditServiceTest extends TestCase
 
         $saleRepository
             ->method('findOrCreateNewSale')
-            ->willReturn(SaleBuilder::aNewlyCreatedSale()->build());
+            ->willReturn(SaleBuilder::aNewlyCreatedSale());
 
         return $saleRepository;
     }

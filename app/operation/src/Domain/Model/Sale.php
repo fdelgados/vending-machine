@@ -10,11 +10,13 @@ final class Sale
     private readonly DateTimeImmutable $startedAt;
     private array $coins;
     private float $credit;
+    private SaleState $state;
 
     public function __construct(SaleId $saleId)
     {
         $this->id = $saleId;
         $this->startedAt = new DateTimeImmutable();
+        $this->state = SaleState::IN_PROGRESS;
         $this->coins = [];
         $this->credit = 0.0;
     }
@@ -26,8 +28,10 @@ final class Sale
 
     public function addCredit(Coin $coin): void
     {
+        precondition($this->state->isInProgress(), 'The sale is not in progress credits cannot be added.');
+
         $this->coins[] = $coin;
-        $this->credit += $coin->value();
+        $this->credit += $coin->getValue();
     }
 
     public function getCredit(): float
@@ -35,14 +39,18 @@ final class Sale
         return $this->credit;
     }
 
-    public function getNumberOfCoins(): int
+    /**
+     * @return Coin[]
+     */
+    public function getAvailableCoins(): array
     {
-        return count($this->coins);
+        return $this->coins;
     }
 
     public function cancel(): void
     {
-        $this->coins = [];
-        $this->credit = 0.0;
+        precondition($this->state->isInProgress(), 'The sale is not in progress and cannot be cancelled.');
+
+        $this->state = SaleState::CANCELLED;
     }
 }

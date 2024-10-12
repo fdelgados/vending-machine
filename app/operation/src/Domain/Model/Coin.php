@@ -15,7 +15,7 @@ final class Coin
         $this->value = $value;
     }
 
-    public function value(): float
+    public function getValue(): float
     {
         return $this->value;
     }

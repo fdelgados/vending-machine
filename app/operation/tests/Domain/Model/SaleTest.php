@@ -12,7 +12,7 @@ final class SaleTest extends TestCase
     #[Test]
     public function aNewlyCreatedSale_shouldHaveACreditEqualsToZero(): void
     {
-        $sale = SaleBuilder::aNewlyCreatedSale()->build();
+        $sale = SaleBuilder::aNewlyCreatedSale();
 
         self::assertEquals(0, $sale->getCredit());
     }
@@ -20,15 +20,15 @@ final class SaleTest extends TestCase
     #[Test]
     public function aNewlyCreatedSale_shouldHaveNoCoins(): void
     {
-        $sale = SaleBuilder::aNewlyCreatedSale()->build();
+        $sale = SaleBuilder::aNewlyCreatedSale();
 
-        self::assertEquals(0, $sale->getNumberOfCoins());
+        self::assertCount(0, $sale->getAvailableCoins());
     }
 
     #[Test]
     public function addCredit_withValidCoin_shouldIncrementCredit(): void
     {
-        $sale = SaleBuilder::aNewlyCreatedSale()->build();
+        $sale = SaleBuilder::aNewlyCreatedSale();
         $creditBeforeInsertion = $sale->getCredit();
 
         $sale->addCredit(CoinBuilder::aCoin()->build());
@@ -39,11 +39,22 @@ final class SaleTest extends TestCase
     #[Test]
     public function addCredit_withValidCoin_shouldIncrementTheNumberOfCoins(): void
     {
-        $sale = SaleBuilder::aNewlyCreatedSale()->build();
-        $coinsBeforeInsertion = $sale->getNumberOfCoins();
+        $sale = SaleBuilder::aNewlyCreatedSale();
+        $coinsBeforeInsertion = count($sale->getAvailableCoins());
 
         $sale->addCredit(CoinBuilder::aCoin()->build());
 
-        self::assertTrue($sale->getNumberOfCoins() > $coinsBeforeInsertion);
+        self::assertTrue(count($sale->getAvailableCoins()) > $coinsBeforeInsertion);
+    }
+
+    #[Test]
+    public function addCredit_toACancelledSale_throwsADomainException(): void
+    {
+        $cancelledSale = SaleBuilder::aSale()->cancelled()->build();
+
+        assertThrows(
+            \DomainException::class,
+            fn () => $cancelledSale->addCredit(CoinBuilder::aCoin()->build())
+        );
     }
 }

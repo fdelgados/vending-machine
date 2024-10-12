@@ -2,7 +2,6 @@
 
 namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
 
-use ReflectionClass;
 use VendingMachine\Operation\Domain\Model\Coin;
 use VendingMachine\Operation\Domain\Model\Sale;
 use VendingMachine\Operation\Domain\Model\SaleId;
@@ -12,6 +11,7 @@ final class SaleBuilder
     /** @var array<Coin> */
     private array $coins = [];
     private SaleId $id;
+    private bool $isCancelled = false;
 
     private function __construct()
     {
@@ -46,11 +46,29 @@ final class SaleBuilder
         return $this;
     }
 
+    public function cancelled(): self
+    {
+        $this->isCancelled = true;
+
+        return $this;
+    }
+
+    public function withCoin(Coin $coin): self
+    {
+        $this->coins[] = $coin;
+
+        return $this;
+    }
+
     public function build(): Sale
     {
         $sale = new Sale($this->id);
 
         $this->addCredits($sale);
+
+        if ($this->isCancelled) {
+            $sale->cancel();
+        }
 
         return $sale;
     }

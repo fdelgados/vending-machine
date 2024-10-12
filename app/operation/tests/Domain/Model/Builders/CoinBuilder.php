@@ -21,6 +21,13 @@ final class CoinBuilder
         return new self();
     }
 
+    public function ofValue(float $value): self
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+
     public function build(): Coin
     {
         return new Coin($this->value);

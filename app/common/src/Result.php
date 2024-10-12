@@ -12,7 +12,7 @@ use Throwable;
  * This class represents the result of an operation. It can either be a success or a failure.
  * In case of a success, it can optionally hold a value. In case of a failure, it holds an Error.
  */
-abstract class Result implements \Stringable
+class Result implements \Stringable
 {
     private bool $isSuccess;
     private ?Error $error;
