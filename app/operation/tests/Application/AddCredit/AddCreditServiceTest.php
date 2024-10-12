@@ -32,7 +32,8 @@ final class AddCreditServiceTest extends TestCase
         $result = $this->addCreditService->add($command);
 
         self::assertTrue($result->isSuccess());
-        self::assertTrue($result->getCredit() > 0);
+        self::assertIsFloat($result->getValue());
+        self::assertGreaterThan(0.0, $result->getValue());
     }
 
     public static function validCommands(): array

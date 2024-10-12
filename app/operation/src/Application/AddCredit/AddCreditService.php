@@ -2,6 +2,7 @@
 
 namespace VendingMachine\Operation\Application\AddCredit;
 
+use VendingMachine\Common\Result;
 use VendingMachine\Operation\Domain\Model\Coin;
 use VendingMachine\Operation\Domain\Model\SaleId;
 use VendingMachine\Operation\Domain\Model\SaleRepository;
@@ -12,7 +13,7 @@ final readonly class AddCreditService
     {
     }
 
-    public function add(AddCreditCommand $command): AddCreditResult
+    public function add(AddCreditCommand $command): Result
     {
         $saleId = SaleId::ofNullable($command->getSaleId());
         $coin = new Coin($command->getCoinValue());
@@ -23,6 +24,6 @@ final readonly class AddCreditService
 
         $this->saleRepository->save($sale);
 
-        return AddCreditResult::ok($sale->getCredit());
+        return Result::success($sale->getCredit());
     }
 }
