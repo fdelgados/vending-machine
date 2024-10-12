@@ -26,7 +26,7 @@ final class SaleTest extends TestCase
     }
 
     #[Test]
-    public function insertCoin_withValidCoin_shouldIncrementCredit(): void
+    public function addCredit_withValidCoin_shouldIncrementCredit(): void
     {
         $sale = SaleBuilder::aNewlyCreatedSale()->build();
         $creditBeforeInsertion = $sale->getCredit();
@@ -37,7 +37,7 @@ final class SaleTest extends TestCase
     }
 
     #[Test]
-    public function insertCoin_withValidCoin_shouldIncrementTheNumberOfCoins(): void
+    public function addCredit_withValidCoin_shouldIncrementTheNumberOfCoins(): void
     {
         $sale = SaleBuilder::aNewlyCreatedSale()->build();
         $coinsBeforeInsertion = $sale->getNumberOfCoins();
