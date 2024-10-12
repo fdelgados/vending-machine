@@ -60,6 +60,13 @@ final class SaleBuilder
         return $this;
     }
 
+    public function withCreditOf(float $credit): self
+    {
+        $this->coins[] = CoinBuilder::aCoin()->ofValue($credit)->build();
+
+        return $this;
+    }
+
     public function build(): Sale
     {
         $sale = new Sale($this->id);

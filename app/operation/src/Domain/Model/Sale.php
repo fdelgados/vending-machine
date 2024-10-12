@@ -58,4 +58,28 @@ final class Sale
 
         $this->state = SaleState::CANCELLED;
     }
+
+    public function selectProduct(Product $product): Result
+    {
+        precondition($this->state->isInProgress(), 'The sale is not in progress and products cannot be added.');
+
+        if ($this->credit->lessThan($product->getPrice())) {
+            return Result::failure(Errors::insufficientCredit());
+        }
+
+        if ($product->isOutOfStock()) {
+            return Result::failure(Errors::productOutOfStock());
+        }
+
+        $this->credit = $this->credit->minus($product->getPrice());
+        $product->decreaseStock();
+        $this->product = $product;
+
+        return Result::success();
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
 }

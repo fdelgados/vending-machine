@@ -10,4 +10,14 @@ final class Errors
     {
         return Error::withDescription('sale_not_found', 'Sale not found');
     }
+
+    public static function insufficientCredit(): Error
+    {
+        return Error::withDescription('insufficient_credit', 'Insufficient credit');
+    }
+
+    public static function productOutOfStock(): Error
+    {
+        return Error::withDescription('product_out_of_stock', 'Product out of stock');
+    }
 }
