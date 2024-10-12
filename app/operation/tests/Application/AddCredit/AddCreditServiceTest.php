@@ -5,22 +5,19 @@ namespace Tests\VendingMachine\Operation\Application\AddCredit;
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
 use VendingMachine\Operation\Application\AddCredit\AddCreditCommand;
 use VendingMachine\Operation\Application\AddCredit\AddCreditService;
-use VendingMachine\Operation\Domain\Model\SaleRepository;
+use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;
 
 final class AddCreditServiceTest extends TestCase
 {
     private AddCreditService $addCreditService;
-    private SaleRepository|MockObject $saleRepository;
 
     protected function setUp(): void
     {
-        $this->saleRepository = $this->createRepository();
-        $this->addCreditService = new AddCreditService($this->saleRepository);
+        $saleRepository = new InMemorySaleRepository();
+        $this->addCreditService = new AddCreditService($saleRepository);
 
         parent::setUp();
     }
@@ -48,16 +45,5 @@ final class AddCreditServiceTest extends TestCase
         }
 
         return $commands;
-    }
-
-    private function createRepository(): SaleRepository|MockObject
-    {
-        $saleRepository = $this->createMock(SaleRepository::class);
-
-        $saleRepository
-            ->method('findOrCreateNewSale')
-            ->willReturn(SaleBuilder::aNewlyCreatedSale());
-
-        return $saleRepository;
     }
 }
