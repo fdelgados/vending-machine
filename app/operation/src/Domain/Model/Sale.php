@@ -11,9 +11,9 @@ final class Sale
     private array $coins;
     private float $credit;
 
-    public function __construct()
+    public function __construct(SaleId $saleId)
     {
-        $this->id = SaleId::generate();
+        $this->id = $saleId;
         $this->startedAt = new DateTimeImmutable();
         $this->coins = [];
         $this->credit = 0.0;
