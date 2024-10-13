@@ -7,7 +7,7 @@ use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Product\Product;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 
-final class PurchaseProcessor
+class PurchaseProcessor
 {
     public function purchase(Sale $sale, Product $product): Result
     {

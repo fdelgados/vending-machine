@@ -2,6 +2,7 @@
 
 namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
 
+use VendingMachine\Operation\Domain\Model\Product\ProductId;
 use VendingMachine\Operation\Domain\Model\Sale\Coin;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
@@ -12,6 +13,7 @@ final class SaleBuilder
     private array $coins = [];
     private SaleId $id;
     private bool $isCancelled = false;
+    private ?ProductId $productId = null;
 
     private function __construct()
     {
@@ -60,6 +62,13 @@ final class SaleBuilder
         return $this;
     }
 
+    public function withProductId(ProductId $productId): self
+    {
+        $this->productId = $productId;
+
+        return $this;
+    }
+
     public function withCreditOf(float $credit): self
     {
         $this->coins[] = CoinBuilder::aCoin()->ofValue($credit)->build();
@@ -72,6 +81,9 @@ final class SaleBuilder
         $sale = new Sale($this->id);
 
         $this->addCredits($sale);
+        if ($this->productId) {
+            $sale->selectProduct($this->productId);
+        }
 
         if ($this->isCancelled) {
             $sale->cancel();

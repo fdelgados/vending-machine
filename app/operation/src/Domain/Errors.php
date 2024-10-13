@@ -20,4 +20,9 @@ final class Errors
     {
         return Error::withDescription('product_out_of_stock', 'Product out of stock');
     }
+
+    public static function productNotFound(): Error
+    {
+        return Error::withDescription('product_not_found', 'Product not found');
+    }
 }

@@ -11,6 +11,11 @@ final class ProductIdMother
     {
         $faker = Factory::create();
 
-        return new ProductId($faker->randomDigitNot(0));
+        return new ProductId((string) $faker->randomDigitNot(0));
+    }
+
+    public static function ofId(string $id): ProductId
+    {
+        return new ProductId($id);
     }
 }
