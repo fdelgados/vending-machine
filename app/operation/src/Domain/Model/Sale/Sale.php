@@ -3,9 +3,8 @@
 namespace VendingMachine\Operation\Domain\Model\Sale;
 
 use DateTimeImmutable;
-use VendingMachine\Common\Result;
-use VendingMachine\Operation\Domain\Errors;
-use VendingMachine\Operation\Domain\Model\Product\Product;
+use VendingMachine\Common\Domain\Money;
+use VendingMachine\Operation\Domain\Model\Product\ProductId;
 
 final class Sale
 {
@@ -14,7 +13,7 @@ final class Sale
     private array $coins;
     private Credit $credit;
     private SaleState $state;
-    private ?Product $product;
+    private ?ProductId $productId;
 
     public function __construct(SaleId $saleId)
     {
@@ -23,7 +22,7 @@ final class Sale
         $this->state = SaleState::IN_PROGRESS;
         $this->coins = [];
         $this->credit = new Credit(0.0);
-        $this->product = null;
+        $this->productId = null;
     }
 
     public function getId(): SaleId
@@ -59,27 +58,20 @@ final class Sale
         $this->state = SaleState::CANCELLED;
     }
 
-    public function selectProduct(Product $product): Result
+    public function selectProduct(ProductId $productId): void
     {
         precondition($this->state->isInProgress(), 'The sale is not in progress and products cannot be added.');
 
-        if ($this->credit->isLessThan($product->getPrice())) {
-            return Result::failure(Errors::insufficientCredit());
-        }
-
-        if ($product->isOutOfStock()) {
-            return Result::failure(Errors::productOutOfStock());
-        }
-
-        $this->credit = $this->credit->minus($product->getPrice());
-        $product->decreaseStock();
-        $this->product = $product;
-
-        return Result::success();
+        $this->productId = $productId;
     }
 
-    public function getProduct(): ?Product
+    public function deductCredit(Money $money): void
     {
-        return $this->product;
+        $this->credit = $this->credit->minus($money);
+    }
+
+    public function getProductId(): ?ProductId
+    {
+        return $this->productId;
     }
 }

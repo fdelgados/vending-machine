@@ -19,6 +19,11 @@ final class Product
         $this->availableStock = $availableStock;
     }
 
+    public function getId(): ProductId
+    {
+        return $this->id;
+    }
+
     public function getName(): Name
     {
         return $this->name;
