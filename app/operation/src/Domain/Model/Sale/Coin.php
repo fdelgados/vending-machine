@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Operation\Domain\Model\Sale;
 
-final class Coin
+final class Coin implements \Stringable
 {
     private const array ALLOWED_VALUES = [0.05, 0.10, 0.25, 1.0];
 
@@ -23,5 +23,10 @@ final class Coin
     public function equals(Coin $other): bool
     {
         return $this->value === $other->value;
+    }
+
+    public function __toString(): string
+    {
+        return number_format($this->value, 2);
     }
 }

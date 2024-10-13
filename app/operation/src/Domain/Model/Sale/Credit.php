@@ -18,6 +18,16 @@ final class Credit extends Money
         return new self($this->amount + $amount);
     }
 
+    public function subtract(float $amount): self
+    {
+        return new self(round($this->amount - $amount, 2));
+    }
+
+    public function isPositive(): bool
+    {
+        return $this->amount > 0.0;
+    }
+
     public static function zero(): self
     {
         return new self(0.0);

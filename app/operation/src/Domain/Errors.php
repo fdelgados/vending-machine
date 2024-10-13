@@ -25,4 +25,9 @@ final class Errors
     {
         return Error::withDescription('product_not_found', 'Product not found');
     }
+
+    public static function notEnoughChange(): Error
+    {
+        return Error::withDescription('not_enough_change', 'Not enough change');
+    }
 }
