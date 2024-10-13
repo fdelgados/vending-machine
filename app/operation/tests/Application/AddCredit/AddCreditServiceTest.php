@@ -18,6 +18,7 @@ final class AddCreditServiceTest extends TestCase
     protected function setUp(): void
     {
         $saleRepository = new InMemorySaleRepository();
+
         $this->addCreditService = new AddCreditService($saleRepository);
 
         parent::setUp();

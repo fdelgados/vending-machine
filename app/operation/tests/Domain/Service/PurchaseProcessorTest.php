@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Tests\VendingMachine\Operation\Domain\Model\Service;
+namespace Tests\VendingMachine\Operation\Domain\Service;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Tests\VendingMachine\Operation\Domain\Model\Builders\CoinBuilder;
+use Tests\VendingMachine\Common\Domain\CoinBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\PriceMother;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\ProductBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;

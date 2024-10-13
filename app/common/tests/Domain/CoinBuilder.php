@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
+namespace Tests\VendingMachine\Common\Domain;
 
 use Faker\Factory;
-use VendingMachine\Operation\Domain\Model\Sale\Coin;
+use VendingMachine\Common\Domain\Coin;
 
 final class CoinBuilder
 {

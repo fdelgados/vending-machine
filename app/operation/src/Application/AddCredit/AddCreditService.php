@@ -2,8 +2,8 @@
 
 namespace VendingMachine\Operation\Application\AddCredit;
 
+use VendingMachine\Common\Domain\Coin;
 use VendingMachine\Common\Result;
-use VendingMachine\Operation\Domain\Model\Sale\Coin;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;
 

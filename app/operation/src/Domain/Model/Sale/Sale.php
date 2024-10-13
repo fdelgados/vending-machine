@@ -3,6 +3,7 @@
 namespace VendingMachine\Operation\Domain\Model\Sale;
 
 use DateTimeImmutable;
+use VendingMachine\Common\Domain\Coin;
 use VendingMachine\Common\Domain\Money;
 use VendingMachine\Operation\Domain\Model\Product\ProductId;
 

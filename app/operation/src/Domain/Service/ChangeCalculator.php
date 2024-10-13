@@ -2,9 +2,9 @@
 
 namespace VendingMachine\Operation\Domain\Service;
 
+use VendingMachine\Common\Domain\CoinStock;
 use VendingMachine\Common\Result;
 use VendingMachine\Operation\Domain\Errors;
-use VendingMachine\Operation\Domain\Model\Sale\CoinStock;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
 
 abstract class ChangeCalculator

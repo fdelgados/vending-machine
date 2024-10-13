@@ -5,7 +5,7 @@ namespace Tests\VendingMachine\Operation\Domain\Model\Sale;
 use DomainException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Tests\VendingMachine\Operation\Domain\Model\Builders\CoinBuilder;
+use Tests\VendingMachine\Common\Domain\CoinBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\ProductIdMother;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;

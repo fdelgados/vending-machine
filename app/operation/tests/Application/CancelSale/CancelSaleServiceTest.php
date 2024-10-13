@@ -5,7 +5,7 @@ namespace Tests\VendingMachine\Operation\Application\CancelSale;
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Tests\VendingMachine\Operation\Domain\Model\Builders\CoinBuilder;
+use Tests\VendingMachine\Common\Domain\CoinBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleIdMother;
 use VendingMachine\Operation\Application\CancelSale\CancelCommand;

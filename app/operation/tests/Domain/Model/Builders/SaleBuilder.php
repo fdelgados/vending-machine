@@ -2,8 +2,9 @@
 
 namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
 
+use Tests\VendingMachine\Common\Domain\CoinBuilder;
+use VendingMachine\Common\Domain\Coin;
 use VendingMachine\Operation\Domain\Model\Product\ProductId;
-use VendingMachine\Operation\Domain\Model\Sale\Coin;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 

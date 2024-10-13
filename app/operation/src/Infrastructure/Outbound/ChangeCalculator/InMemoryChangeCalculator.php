@@ -2,8 +2,8 @@
 
 namespace VendingMachine\Operation\Infrastructure\Outbound\ChangeCalculator;
 
-use VendingMachine\Operation\Domain\Model\Sale\Coin;
-use VendingMachine\Operation\Domain\Model\Sale\CoinStock;
+use VendingMachine\Common\Domain\Coin;
+use VendingMachine\Common\Domain\CoinStock;
 use VendingMachine\Operation\Domain\Service\ChangeCalculator;
 
 final class InMemoryChangeCalculator extends ChangeCalculator
