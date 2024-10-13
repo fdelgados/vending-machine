@@ -1,6 +1,6 @@
 <?php
 
-namespace VendingMachine\Operation\Domain\Model;
+namespace VendingMachine\Operation\Domain\Model\Sale;
 
 enum SaleState
 {

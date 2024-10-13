@@ -26,12 +26,12 @@ abstract class Money implements \Stringable
         return $this->amount;
     }
 
-    public function greaterThan(Money $money): bool
+    public function isGreaterThan(Money $money): bool
     {
         return $this->amount > $money->amount;
     }
 
-    public function lessThan(Money $money): bool
+    public function isLessThan(Money $money): bool
     {
         return $this->amount < $money->amount;
     }

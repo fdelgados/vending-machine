@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Operation\Domain\Model;
+namespace VendingMachine\Operation\Domain\Model\Sale;
 
 use DateTimeImmutable;
 use VendingMachine\Common\Result;
@@ -63,7 +63,7 @@ final class Sale
     {
         precondition($this->state->isInProgress(), 'The sale is not in progress and products cannot be added.');
 
-        if ($this->credit->lessThan($product->getPrice())) {
+        if ($this->credit->isLessThan($product->getPrice())) {
             return Result::failure(Errors::insufficientCredit());
         }
 

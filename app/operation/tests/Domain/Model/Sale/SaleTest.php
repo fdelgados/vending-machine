@@ -1,16 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Tests\VendingMachine\Operation\Domain\Model;
+namespace Tests\VendingMachine\Operation\Domain\Model\Sale;
 
 use DomainException;
-use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\CoinBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\PriceMother;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\ProductBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
-use VendingMachine\Operation\Domain\Model\Credit;
+use VendingMachine\Operation\Domain\Model\Sale\Credit;
 
 final class SaleTest extends TestCase
 {
@@ -38,7 +37,7 @@ final class SaleTest extends TestCase
 
         $sale->addCredit(CoinBuilder::aCoin()->build());
 
-        self::assertTrue($sale->getCredit()->greaterThan($creditBeforeInsertion));
+        self::assertTrue($sale->getCredit()->isGreaterThan($creditBeforeInsertion));
     }
 
     #[Test]

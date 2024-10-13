@@ -3,7 +3,7 @@
 namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
 
 use Faker\Factory;
-use VendingMachine\Operation\Domain\Model\Coin;
+use VendingMachine\Operation\Domain\Model\Sale\Coin;
 
 final class CoinBuilder
 {

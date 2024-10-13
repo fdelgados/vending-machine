@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Operation\Domain\Model;
+namespace VendingMachine\Operation\Domain\Model\Sale;
 
 interface SaleRepository
 {

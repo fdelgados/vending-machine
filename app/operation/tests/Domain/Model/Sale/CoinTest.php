@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Tests\VendingMachine\Operation\Domain\Model;
+namespace Tests\VendingMachine\Operation\Domain\Model\Sale;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use VendingMachine\Operation\Domain\Model\Coin;
+use VendingMachine\Operation\Domain\Model\Sale\Coin;
 
 final class CoinTest extends TestCase
 {

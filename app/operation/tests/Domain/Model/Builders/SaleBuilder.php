@@ -2,9 +2,9 @@
 
 namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
 
-use VendingMachine\Operation\Domain\Model\Coin;
-use VendingMachine\Operation\Domain\Model\Sale;
-use VendingMachine\Operation\Domain\Model\SaleId;
+use VendingMachine\Operation\Domain\Model\Sale\Coin;
+use VendingMachine\Operation\Domain\Model\Sale\Sale;
+use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 
 final class SaleBuilder
 {

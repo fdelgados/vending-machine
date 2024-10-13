@@ -2,9 +2,9 @@
 
 namespace VendingMachine\Operation\Infrastructure\Outbound\Persistence;
 
-use VendingMachine\Operation\Domain\Model\Sale;
-use VendingMachine\Operation\Domain\Model\SaleId;
-use VendingMachine\Operation\Domain\Model\SaleRepository;
+use VendingMachine\Operation\Domain\Model\Sale\Sale;
+use VendingMachine\Operation\Domain\Model\Sale\SaleId;
+use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;
 
 final class InMemorySaleRepository implements SaleRepository
 {

@@ -3,9 +3,9 @@
 namespace VendingMachine\Operation\Application\AddCredit;
 
 use VendingMachine\Common\Result;
-use VendingMachine\Operation\Domain\Model\Coin;
-use VendingMachine\Operation\Domain\Model\SaleId;
-use VendingMachine\Operation\Domain\Model\SaleRepository;
+use VendingMachine\Operation\Domain\Model\Sale\Coin;
+use VendingMachine\Operation\Domain\Model\Sale\SaleId;
+use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;
 
 final readonly class AddCreditService
 {

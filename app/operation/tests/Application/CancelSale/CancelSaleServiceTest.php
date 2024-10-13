@@ -10,7 +10,7 @@ use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleIdMother;
 use VendingMachine\Operation\Application\CancelSale\CancelCommand;
 use VendingMachine\Operation\Application\CancelSale\CancelSaleService;
-use VendingMachine\Operation\Domain\Model\SaleRepository;
+use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;
 
 final class CancelSaleServiceTest extends TestCase
