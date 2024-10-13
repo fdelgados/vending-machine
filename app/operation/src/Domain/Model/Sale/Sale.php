@@ -35,7 +35,7 @@ final class Sale
         precondition($this->state->isInProgress(), 'The sale is not in progress credits cannot be added.');
 
         $this->coins[] = $coin;
-        $this->credit = $this->credit->sum($coin->getValue());
+        $this->credit = $this->credit->plus($coin);
     }
 
     public function getCredit(): Credit

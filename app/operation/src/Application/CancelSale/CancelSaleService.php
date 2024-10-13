@@ -30,7 +30,7 @@ final readonly class CancelSaleService
 
         return Result::success(
             array_map(
-                fn (Coin $coin) => $coin->getValue(),
+                fn (Coin $coin) => $coin->getAmount(),
                 $sale->getAvailableCoins()
             )
         );

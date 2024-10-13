@@ -9,7 +9,7 @@ use VendingMachine\Operation\Domain\Model\Sale\Credit;
 
 abstract class ChangeCalculator
 {
-    final public function calculate(Credit $credit): Result
+    public function calculate(Credit $credit): Result
     {
         $availableCoins = $this->getAvailableCoins();
         $change = [];
@@ -28,8 +28,8 @@ abstract class ChangeCalculator
     private function updateCredit(Credit $credit, CoinStock $coinStock, array &$change): Credit
     {
         $coin = $coinStock->getCoin();
-        while ($coinStock->getQuantity() > 0 && $credit->getAmount() >= $coin->getValue()) {
-            $credit = $credit->subtract($coin->getValue());
+        while ($coinStock->getQuantity() > 0 && $credit->isGreaterOrEqual($coin)) {
+            $credit = $credit->minus($coin);
             $coinStock->remove(1);
             $change[] = $coin;
         }

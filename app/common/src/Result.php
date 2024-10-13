@@ -129,7 +129,7 @@ class Result implements \Stringable
     final public function match(callable $success, callable $failure): mixed
     {
         if ($this->isSuccess()) {
-            return $success($this->getCredit());
+            return $success($this->getValue());
         }
 
         return $failure($this->error);

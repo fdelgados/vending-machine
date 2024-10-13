@@ -17,6 +17,7 @@ use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Product\ProductId;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
+use VendingMachine\Operation\Domain\Service\ChangeCalculator;
 use VendingMachine\Operation\Domain\Service\PurchaseProcessor;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemoryProductRepository;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;
@@ -26,16 +27,19 @@ final class PurchaseServiceTest extends TestCase
     private InMemorySaleRepository $saleRepository;
     private PurchaseService $purchaseService;
     private PurchaseProcessor|MockObject $purchaseProcessor;
+    private ChangeCalculator|MockObject $changeCalculator;
 
     protected function setUp(): void
     {
         $this->saleRepository = new InMemorySaleRepository();
         $this->purchaseProcessor = $this->createMock(PurchaseProcessor::class);
+        $this->changeCalculator = $this->createMock(ChangeCalculator::class);
 
         $this->purchaseService = new PurchaseService(
             $this->saleRepository,
             new InMemoryProductRepository(),
-            $this->purchaseProcessor
+            $this->purchaseProcessor,
+            $this->changeCalculator
         );
 
         parent::setUp();
@@ -71,6 +75,9 @@ final class PurchaseServiceTest extends TestCase
         $sale = $this->createASale();
         $command = $this->createCommand($sale->getId(), $sale->getProductId());
 
+        $this->changeCalculator
+            ->method('calculate')
+            ->willReturn(Result::success());
         $this->purchaseProcessor
             ->method('purchase')
             ->willReturn($failure);
@@ -86,6 +93,9 @@ final class PurchaseServiceTest extends TestCase
         $sale = $this->createASale();
         $command = $this->createCommand($sale->getId(), $sale->getProductId());
 
+        $this->changeCalculator
+            ->method('calculate')
+            ->willReturn(Result::success());
         $this->purchaseProcessor
             ->method('purchase')
             ->willReturn(Result::success());
@@ -93,6 +103,22 @@ final class PurchaseServiceTest extends TestCase
         $result = $this->purchaseService->purchase($command);
 
         self::assertTrue($result->isSuccess());
+    }
+
+    #[Test]
+    public function purchase_whenChangeCalculatorReturnsFailure_returnsFailureResult(): void
+    {
+        $sale = $this->createASale();
+        $command = $this->createCommand($sale->getId(), $sale->getProductId());
+
+        $this->changeCalculator
+            ->method('calculate')
+            ->willReturn(Result::failure(Errors::notEnoughChange()));
+
+        $result = $this->purchaseService->purchase($command);
+
+        self::assertTrue($result->isFailure());
+        self::assertEquals('not_enough_change', $result->getErrorCode());
     }
 
     public static function purchaseProcessorFailures(): array
@@ -109,7 +135,7 @@ final class PurchaseServiceTest extends TestCase
 
         return new PurchaseCommand(
             $saleId ? $saleId->getValue() : $faker->uuid(),
-            $productId ? $productId->value() : $faker->numerify('#')
+            $productId ? $productId->value() : (string) $faker->randomDigitNot(0)
         );
     }
 

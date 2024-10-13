@@ -15,7 +15,7 @@ final class CoinTest extends TestCase
     {
         $coin = new Coin($value);
 
-        self::assertEquals($value, $coin->getValue());
+        self::assertEquals($value, $coin->getAmount());
     }
 
     #[Test]
