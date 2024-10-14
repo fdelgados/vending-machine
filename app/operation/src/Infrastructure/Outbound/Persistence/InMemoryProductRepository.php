@@ -2,10 +2,10 @@
 
 namespace VendingMachine\Operation\Infrastructure\Outbound\Persistence;
 
+use VendingMachine\Common\Domain\ProductId;
 use VendingMachine\Operation\Domain\Model\Product\Name;
 use VendingMachine\Operation\Domain\Model\Product\Price;
 use VendingMachine\Operation\Domain\Model\Product\Product;
-use VendingMachine\Operation\Domain\Model\Product\ProductId;
 use VendingMachine\Operation\Domain\Model\Product\ProductRepository;
 
 final class InMemoryProductRepository implements ProductRepository

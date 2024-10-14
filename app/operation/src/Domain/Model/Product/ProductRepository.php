@@ -2,6 +2,8 @@
 
 namespace VendingMachine\Operation\Domain\Model\Product;
 
+use VendingMachine\Common\Domain\ProductId;
+
 interface ProductRepository
 {
     public function productOfId(ProductId $productId): ?Product;

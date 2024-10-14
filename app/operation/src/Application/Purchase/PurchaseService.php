@@ -2,9 +2,9 @@
 
 namespace VendingMachine\Operation\Application\Purchase;
 
+use VendingMachine\Common\Domain\ProductId;
 use VendingMachine\Common\Result;
 use VendingMachine\Operation\Domain\Errors;
-use VendingMachine\Operation\Domain\Model\Product\ProductId;
 use VendingMachine\Operation\Domain\Model\Product\ProductRepository;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;

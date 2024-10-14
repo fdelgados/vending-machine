@@ -4,10 +4,11 @@ namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
 
 use Faker\Factory;
 use Faker\Generator;
+use Tests\VendingMachine\Common\Domain\ProductIdMother;
+use VendingMachine\Common\Domain\ProductId;
 use VendingMachine\Operation\Domain\Model\Product\Name;
 use VendingMachine\Operation\Domain\Model\Product\Price;
 use VendingMachine\Operation\Domain\Model\Product\Product;
-use VendingMachine\Operation\Domain\Model\Product\ProductId;
 
 final class ProductBuilder
 {
