@@ -1,6 +1,7 @@
 /db_data/
 /.idea/
 /vendor/
+.db_data/
 .phpunit.result.cache
 vending-machine.iml
 .DS_Store

@@ -18,8 +18,10 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=vending_machine
     volumes:
-      - db_data:/var/lib/mysql
+      - ./.db_data:/var/lib/mysql
+      - ./etc/database/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
     networks:
