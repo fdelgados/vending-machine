@@ -6,6 +6,9 @@ use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Tests\VendingMachine\Common\Domain\CoinBuilder;
+use VendingMachine\Common\Domain\ChangeDispenser;
+use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeDispenser;
 use VendingMachine\Operation\Application\AddCredit\AddCreditCommand;
 use VendingMachine\Operation\Application\AddCredit\AddCreditService;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
@@ -14,12 +17,14 @@ use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRep
 final class AddCreditServiceTest extends TestCase
 {
     private AddCreditService $addCreditService;
+    private ChangeDispenser $changeDispenser;
 
     protected function setUp(): void
     {
         $saleRepository = new InMemorySaleRepository();
+        $this->changeDispenser = new InMemoryChangeDispenser();
 
-        $this->addCreditService = new AddCreditService($saleRepository);
+        $this->addCreditService = new AddCreditService($saleRepository, $this->changeDispenser);
 
         parent::setUp();
     }
@@ -33,6 +38,20 @@ final class AddCreditServiceTest extends TestCase
         self::assertTrue($result->isSuccess());
         self::assertInstanceOf(Credit::class, $result->getValue());
         self::assertTrue($result->getValue()->isGreaterThan(Credit::zero()));
+    }
+
+    #[Test]
+    #[DataProvider('validCommands')]
+    public function add_withValidCommand_increasesTheChangeDispenserStock(AddCreditCommand $command): void
+    {
+        $coin = CoinBuilder::aCoin()->ofValue($command->getCoinValue())->build();
+        $stockBefore = $this->changeDispenser->getStockOfCoin($coin);
+
+        $this->addCreditService->add($command);
+
+        $stockAfter = $this->changeDispenser->getStockOfCoin($coin);
+
+        self::assertTrue($stockAfter > $stockBefore);
     }
 
     public static function validCommands(): array

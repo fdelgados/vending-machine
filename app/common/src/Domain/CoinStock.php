@@ -32,6 +32,13 @@ final class CoinStock
         return $this->quantity;
     }
 
+    public function add(int $quantity): void
+    {
+        ensure($quantity > 0, 'Quantity must be greater than 0');
+
+        $this->quantity += $quantity;
+    }
+
     public function remove(int $quantity): void
     {
         ensure($quantity > 0, 'Quantity must be greater than 0');
