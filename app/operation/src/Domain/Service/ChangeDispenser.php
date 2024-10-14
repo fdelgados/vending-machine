@@ -5,17 +5,16 @@ namespace VendingMachine\Operation\Domain\Service;
 use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Domain\CoinStock;
-use VendingMachine\Common\Result;
-use VendingMachine\Operation\Domain\Errors;
+use VendingMachine\Operation\Domain\InsufficientChangeException;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
 
-readonly class ChangeDispenser
+class ChangeDispenser
 {
-    public function __construct(private ChangeStockControl $changeStockControl)
+    public function __construct(private readonly ChangeStockControl $changeStockControl)
     {
     }
 
-    public function dispense(Credit $credit): Result
+    public function dispense(Credit $credit): CoinCollection
     {
         $change = new CoinCollection();
         $coins = $this->changeStockControl->getAvailableCoins();
@@ -25,10 +24,10 @@ readonly class ChangeDispenser
         }
 
         if ($credit->isPositive()) {
-            return Result::failure(Errors::notEnoughChange());
+           throw new InsufficientChangeException();
         }
 
-        return Result::success($change);
+        return $change;
     }
 
     private function updateCredit(Credit $credit, CoinStock $coinStock, CoinCollection $change): Credit

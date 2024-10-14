@@ -11,4 +11,6 @@ interface ChangeStockControl
     public function removeCoins(Coin $coin, int $quantity): void;
 
     public function getStockOfCoin(Coin $coin): int;
+
+    public function hasEnoughChange(float $credit): bool;
 }

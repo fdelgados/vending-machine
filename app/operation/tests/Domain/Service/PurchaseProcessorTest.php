@@ -2,21 +2,35 @@
 
 namespace Tests\VendingMachine\Operation\Domain\Service;
 
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Tests\VendingMachine\Common\Domain\CoinBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\PriceMother;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\ProductBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
+use VendingMachine\Common\Domain\ChangeStockControl;
+use VendingMachine\Common\Domain\CoinCollection;
+use VendingMachine\Operation\Domain\Service\ChangeDispenser;
 use VendingMachine\Operation\Domain\Service\PurchaseProcessor;
 
 final class PurchaseProcessorTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     private PurchaseProcessor $purchaseProcessor;
+    private ChangeStockControl|MockInterface $changeStockControl;
 
     protected function setUp(): void
     {
-        $this->purchaseProcessor = new PurchaseProcessor();
+        $changeDispenser = $this->createChangeDispenser();
+        $this->changeStockControl = $this->createChangeStockControl();
+
+        $this->purchaseProcessor = new PurchaseProcessor(
+            $changeDispenser,
+            $this->changeStockControl
+        );
 
         parent::setUp();
     }
@@ -49,6 +63,20 @@ final class PurchaseProcessorTest extends TestCase
 
         self::assertTrue($result->isFailure());
         self::assertEquals('insufficient_credit', $result->getErrorCode());
+    }
+
+    #[Test]
+    public function purchase_withNotEnoughChange_returnsAFailureResult(): void
+    {
+        $sale = SaleBuilder::aSale()->withCreditOf(1.0)->build();
+        $product = ProductBuilder::aProduct()->pricedAt(PriceMother::ofAmount(0.65))->build();
+
+        $this->changeStockControl->shouldReceive('hasEnoughChange')->andReturn(false);
+
+        $result = $this->purchaseProcessor->purchase($sale, $product);
+
+        self::assertTrue($result->isFailure());
+        self::assertEquals('not_enough_change', $result->getErrorCode());
     }
 
     #[Test]
@@ -92,5 +120,21 @@ final class PurchaseProcessorTest extends TestCase
         $this->purchaseProcessor->purchase($sale, $product);
 
         self::assertEquals(1, $stockBeforeSelection - $product->getAvailableStock());
+    }
+
+    private function createChangeDispenser(): ChangeDispenser|MockInterface
+    {
+        $changeDispenser = \Mockery::mock(ChangeDispenser::class);
+        $changeDispenser->shouldReceive('dispense')->andReturn(new CoinCollection());
+
+        return $changeDispenser;
+    }
+
+    private function createChangeStockControl(): ChangeStockControl|MockInterface
+    {
+        $changeStockControl = \Mockery::mock(ChangeStockControl::class);
+        $changeStockControl->shouldReceive('hasEnoughChange')->andReturn(true)->byDefault();
+
+        return $changeStockControl;
     }
 }

@@ -3,9 +3,10 @@
 namespace Tests\VendingMachine\Operation\Application\Purchase;
 
 use Faker\Factory;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\ProductIdMother;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
@@ -17,7 +18,6 @@ use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Product\ProductId;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
-use VendingMachine\Operation\Domain\Service\ChangeDispenser;
 use VendingMachine\Operation\Domain\Service\PurchaseProcessor;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemoryProductRepository;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;
@@ -26,20 +26,17 @@ final class PurchaseServiceTest extends TestCase
 {
     private InMemorySaleRepository $saleRepository;
     private PurchaseService $purchaseService;
-    private PurchaseProcessor|MockObject $purchaseProcessor;
-    private ChangeDispenser|MockObject $changeDispenser;
+    private PurchaseProcessor|MockInterface $purchaseProcessor;
 
     protected function setUp(): void
     {
         $this->saleRepository = new InMemorySaleRepository();
-        $this->purchaseProcessor = $this->createMock(PurchaseProcessor::class);
-        $this->changeDispenser = $this->createMock(ChangeDispenser::class);
+        $this->purchaseProcessor = Mockery::mock(PurchaseProcessor::class);
 
         $this->purchaseService = new PurchaseService(
             $this->saleRepository,
             new InMemoryProductRepository(),
-            $this->purchaseProcessor,
-            $this->changeDispenser
+            $this->purchaseProcessor
         );
 
         parent::setUp();
@@ -75,12 +72,7 @@ final class PurchaseServiceTest extends TestCase
         $sale = $this->createASale();
         $command = $this->createCommand($sale->getId(), $sale->getProductId());
 
-        $this->changeDispenser
-            ->method('dispense')
-            ->willReturn(Result::success());
-        $this->purchaseProcessor
-            ->method('purchase')
-            ->willReturn($failure);
+        $this->purchaseProcessor->shouldReceive('purchase')->andReturn($failure);
 
         $result = $this->purchaseService->purchase($command);
 
@@ -93,39 +85,19 @@ final class PurchaseServiceTest extends TestCase
         $sale = $this->createASale();
         $command = $this->createCommand($sale->getId(), $sale->getProductId());
 
-        $this->changeDispenser
-            ->method('dispense')
-            ->willReturn(Result::success());
-        $this->purchaseProcessor
-            ->method('purchase')
-            ->willReturn(Result::success());
+        $this->purchaseProcessor->shouldReceive('purchase')->andReturn(Result::success());
 
         $result = $this->purchaseService->purchase($command);
 
         self::assertTrue($result->isSuccess());
     }
 
-    #[Test]
-    public function purchase_whenChangeCalculatorReturnsFailure_returnsFailureResult(): void
-    {
-        $sale = $this->createASale();
-        $command = $this->createCommand($sale->getId(), $sale->getProductId());
-
-        $this->changeDispenser
-            ->method('dispense')
-            ->willReturn(Result::failure(Errors::notEnoughChange()));
-
-        $result = $this->purchaseService->purchase($command);
-
-        self::assertTrue($result->isFailure());
-        self::assertEquals('not_enough_change', $result->getErrorCode());
-    }
-
     public static function purchaseProcessorFailures(): array
     {
         return [
             [Result::failure(Errors::productOutOfStock())],
-            [Result::failure(Errors::productNotFound())],
+            [Result::failure(Errors::notEnoughChange())],
+            [Result::failure(Errors::insufficientCredit())],
         ];
     }
 

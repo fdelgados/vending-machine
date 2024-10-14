@@ -6,9 +6,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Common\Domain\Coin;
-use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Domain\CoinStock;
 use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeStockControl;
+use VendingMachine\Operation\Domain\InsufficientChangeException;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
 use VendingMachine\Operation\Domain\Service\ChangeDispenser;
 
@@ -16,27 +16,24 @@ final class ChangeDispenserTest extends TestCase
 {
     #[Test]
     #[DataProvider('change')]
-    public function calculate_withAvailableCoins_shouldReturnCorrectChange(float $credit, array $availableCoins, array $expectedChange): void
+    public function dispense_withAvailableCoins_shouldReturnCorrectChange(float $credit, array $availableCoins, array $expectedChange): void
     {
         $changeDispenser = $this->createChangeDispenser($availableCoins);
 
-        $result = $changeDispenser->dispense(new Credit($credit));
+        $change = $changeDispenser->dispense(new Credit($credit));
 
-        /** @var CoinCollection $coinCollection */
-        $coinCollection = $result->getValue();
-
-        self::assertEquals($expectedChange, $coinCollection->toArray());
+        self::assertEquals($expectedChange, $change->toArray());
     }
 
     #[Test]
-    public function calculate_withNotEnoughAvailableCoins_shouldReturnAFailureResult(): void
+    public function dispense_withNotEnoughAvailableCoins_shouldThrowAnInsufficientChangeException(): void
     {
         $changeCalculator = $this->createChangeDispenser(['1.00' => 0, '0.25' => 1, '0.10' => 0, '0.05' => 0]);
 
-        $result = $changeCalculator->dispense(new Credit(1.0));
-
-        self::assertTrue($result->isFailure());
-        self::assertEquals('not_enough_change', $result->getErrorCode());
+        assertThrows(
+            InsufficientChangeException::class,
+            fn() => $changeCalculator->dispense(new Credit(1.0))
+        );
     }
 
     public static function change(): array

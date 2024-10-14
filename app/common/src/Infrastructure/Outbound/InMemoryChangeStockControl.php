@@ -39,6 +39,28 @@ class InMemoryChangeStockControl implements ChangeStockControl
         $this->coins[(string) $coin] = $coinStock;
     }
 
+    public function hasEnoughChange(float $credit): bool
+    {
+        $creditInCents = (int) round($credit * 100);
+        foreach ($this->coins as $coinStock) {
+            $creditInCents = $this->calculateRemainingCredit($creditInCents, $coinStock);
+        }
+
+        return $creditInCents === 0;
+    }
+
+    private function calculateRemainingCredit(int $credit, CoinStock $coinStock): float
+    {
+        $coin = $coinStock->getCoin();
+        $coinValue = (int) round($coin->getAmount() * 100);
+
+        while ($coinStock->getQuantity() > 0 && $credit >= $coinValue) {
+            $credit -= $coinValue;
+        }
+
+        return $credit;
+    }
+
     public function removeCoins(Coin $coin, int $quantity): void
     {
         if (!isset($this->coins[(string) $coin])) {

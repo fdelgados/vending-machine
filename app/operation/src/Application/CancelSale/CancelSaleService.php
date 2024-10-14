@@ -3,7 +3,6 @@
 namespace VendingMachine\Operation\Application\CancelSale;
 
 use VendingMachine\Common\Domain\Coin;
-use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Result;
 use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
@@ -28,10 +27,7 @@ final readonly class CancelSaleService
             return Result::failure(Errors::saleNotFound());
         }
 
-        $result = $this->changeDispenser->dispense($sale->getCredit());
-
-        /** @var CoinCollection $change */
-        $change = $result->getValue();
+        $change = $this->changeDispenser->dispense($sale->getCredit());
 
         $sale->cancel();
 
