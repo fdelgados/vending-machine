@@ -11,7 +11,7 @@ use VendingMachine\Operation\Domain\Model\Product\ProductRepository;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;
-use VendingMachine\Operation\Domain\Service\ChangeCalculator;
+use VendingMachine\Operation\Domain\Service\ChangeDispenser;
 use VendingMachine\Operation\Domain\Service\PurchaseProcessor;
 
 final readonly class PurchaseService
@@ -20,7 +20,7 @@ final readonly class PurchaseService
         private SaleRepository $saleRepository,
         private ProductRepository $productRepository,
         private PurchaseProcessor $purchaseProcessor,
-        private ChangeCalculator $changeCalculator
+        private ChangeDispenser $changeDispenser
     ) {
     }
 
@@ -41,7 +41,7 @@ final readonly class PurchaseService
             return Result::failure(Errors::productNotFound());
         }
 
-        $result = $this->changeCalculator->calculate($sale->getCredit());
+        $result = $this->changeDispenser->dispense($sale->getCredit());
 
         return $result->match(
             success: fn () => $this->doPurchase($sale, $product),

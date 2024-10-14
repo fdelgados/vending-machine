@@ -12,4 +12,9 @@ enum SaleState
     {
         return $this === self::IN_PROGRESS;
     }
+
+    public function isCancelled(): bool
+    {
+        return $this === self::CANCELLED;
+    }
 }

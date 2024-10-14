@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Common\Domain;
 
-interface ChangeDispenser
+interface ChangeStockControl
 {
     public function getAvailableCoins(): array;
 

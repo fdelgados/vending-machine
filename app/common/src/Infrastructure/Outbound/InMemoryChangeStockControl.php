@@ -2,22 +2,22 @@
 
 namespace VendingMachine\Common\Infrastructure\Outbound;
 
-use VendingMachine\Common\Domain\ChangeDispenser;
+use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Domain\Coin;
 use VendingMachine\Common\Domain\CoinStock;
 
-final class InMemoryChangeDispenser implements ChangeDispenser
+class InMemoryChangeStockControl implements ChangeStockControl
 {
     private array $coins;
 
-    public function __construct()
+    public function __construct(array $coins = [])
     {
-        $this->coins = [
+        $this->coins = empty($coins) ? [
             '1.00' => new CoinStock(new Coin(1.00), 10),
             '0.25' => new CoinStock(new Coin(0.25), 20),
             '0.10' => new CoinStock(new Coin(0.10), 25),
             '0.05' => new CoinStock(new Coin(0.05), 50),
-        ];
+        ] : $coins;
     }
 
     public function getAvailableCoins(): array

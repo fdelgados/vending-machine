@@ -7,8 +7,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Tests\VendingMachine\Common\Domain\CoinBuilder;
-use VendingMachine\Common\Domain\ChangeDispenser;
-use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeDispenser;
+use VendingMachine\Common\Domain\ChangeStockControl;
+use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeStockControl;
 use VendingMachine\Operation\Application\AddCredit\AddCreditCommand;
 use VendingMachine\Operation\Application\AddCredit\AddCreditService;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
@@ -17,14 +17,14 @@ use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRep
 final class AddCreditServiceTest extends TestCase
 {
     private AddCreditService $addCreditService;
-    private ChangeDispenser $changeDispenser;
+    private ChangeStockControl $changeStockControl;
 
     protected function setUp(): void
     {
         $saleRepository = new InMemorySaleRepository();
-        $this->changeDispenser = new InMemoryChangeDispenser();
+        $this->changeStockControl = new InMemoryChangeStockControl();
 
-        $this->addCreditService = new AddCreditService($saleRepository, $this->changeDispenser);
+        $this->addCreditService = new AddCreditService($saleRepository, $this->changeStockControl);
 
         parent::setUp();
     }
@@ -45,11 +45,11 @@ final class AddCreditServiceTest extends TestCase
     public function add_withValidCommand_increasesTheChangeDispenserStock(AddCreditCommand $command): void
     {
         $coin = CoinBuilder::aCoin()->ofValue($command->getCoinValue())->build();
-        $stockBefore = $this->changeDispenser->getStockOfCoin($coin);
+        $stockBefore = $this->changeStockControl->getStockOfCoin($coin);
 
         $this->addCreditService->add($command);
 
-        $stockAfter = $this->changeDispenser->getStockOfCoin($coin);
+        $stockAfter = $this->changeStockControl->getStockOfCoin($coin);
 
         self::assertTrue($stockAfter > $stockBefore);
     }

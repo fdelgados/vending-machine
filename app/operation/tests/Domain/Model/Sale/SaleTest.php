@@ -72,4 +72,14 @@ final class SaleTest extends TestCase
             fn () => $cancelledSale->selectProduct($productId)
         );
     }
+
+    #[Test]
+    public function cancel_shouldChangeTheSaleToCancelled(): void
+    {
+        $sale = SaleBuilder::aSale()->build();
+
+        $sale->cancel();
+
+        self::assertTrue($sale->isCancelled());
+    }
 }

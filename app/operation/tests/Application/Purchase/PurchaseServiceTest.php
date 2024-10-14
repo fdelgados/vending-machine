@@ -17,7 +17,7 @@ use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Product\ProductId;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
-use VendingMachine\Operation\Domain\Service\ChangeCalculator;
+use VendingMachine\Operation\Domain\Service\ChangeDispenser;
 use VendingMachine\Operation\Domain\Service\PurchaseProcessor;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemoryProductRepository;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;
@@ -27,19 +27,19 @@ final class PurchaseServiceTest extends TestCase
     private InMemorySaleRepository $saleRepository;
     private PurchaseService $purchaseService;
     private PurchaseProcessor|MockObject $purchaseProcessor;
-    private ChangeCalculator|MockObject $changeCalculator;
+    private ChangeDispenser|MockObject $changeDispenser;
 
     protected function setUp(): void
     {
         $this->saleRepository = new InMemorySaleRepository();
         $this->purchaseProcessor = $this->createMock(PurchaseProcessor::class);
-        $this->changeCalculator = $this->createMock(ChangeCalculator::class);
+        $this->changeDispenser = $this->createMock(ChangeDispenser::class);
 
         $this->purchaseService = new PurchaseService(
             $this->saleRepository,
             new InMemoryProductRepository(),
             $this->purchaseProcessor,
-            $this->changeCalculator
+            $this->changeDispenser
         );
 
         parent::setUp();
@@ -75,8 +75,8 @@ final class PurchaseServiceTest extends TestCase
         $sale = $this->createASale();
         $command = $this->createCommand($sale->getId(), $sale->getProductId());
 
-        $this->changeCalculator
-            ->method('calculate')
+        $this->changeDispenser
+            ->method('dispense')
             ->willReturn(Result::success());
         $this->purchaseProcessor
             ->method('purchase')
@@ -93,8 +93,8 @@ final class PurchaseServiceTest extends TestCase
         $sale = $this->createASale();
         $command = $this->createCommand($sale->getId(), $sale->getProductId());
 
-        $this->changeCalculator
-            ->method('calculate')
+        $this->changeDispenser
+            ->method('dispense')
             ->willReturn(Result::success());
         $this->purchaseProcessor
             ->method('purchase')
@@ -111,8 +111,8 @@ final class PurchaseServiceTest extends TestCase
         $sale = $this->createASale();
         $command = $this->createCommand($sale->getId(), $sale->getProductId());
 
-        $this->changeCalculator
-            ->method('calculate')
+        $this->changeDispenser
+            ->method('dispense')
             ->willReturn(Result::failure(Errors::notEnoughChange()));
 
         $result = $this->purchaseService->purchase($command);

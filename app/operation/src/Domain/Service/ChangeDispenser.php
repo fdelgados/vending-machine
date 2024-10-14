@@ -2,19 +2,25 @@
 
 namespace VendingMachine\Operation\Domain\Service;
 
+use VendingMachine\Common\Domain\ChangeStockControl;
+use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Domain\CoinStock;
 use VendingMachine\Common\Result;
 use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
 
-abstract class ChangeCalculator
+readonly class ChangeDispenser
 {
-    public function calculate(Credit $credit): Result
+    public function __construct(private ChangeStockControl $changeStockControl)
     {
-        $availableCoins = $this->getAvailableCoins();
-        $change = [];
+    }
 
-        foreach ($availableCoins as $coinStock) {
+    public function dispense(Credit $credit): Result
+    {
+        $change = new CoinCollection();
+        $coins = $this->changeStockControl->getAvailableCoins();
+
+        foreach ($coins as $coinStock) {
             $credit = $this->updateCredit($credit, $coinStock, $change);
         }
 
@@ -25,18 +31,15 @@ abstract class ChangeCalculator
         return Result::success($change);
     }
 
-    private function updateCredit(Credit $credit, CoinStock $coinStock, array &$change): Credit
+    private function updateCredit(Credit $credit, CoinStock $coinStock, CoinCollection $change): Credit
     {
         $coin = $coinStock->getCoin();
         while ($coinStock->getQuantity() > 0 && $credit->isGreaterOrEqual($coin)) {
             $credit = $credit->minus($coin);
             $coinStock->remove(1);
-            $change[] = $coin;
+            $change->add($coin);
         }
 
         return $credit;
     }
-
-    /** @return CoinStock[] */
-    abstract protected function getAvailableCoins(): array;
 }

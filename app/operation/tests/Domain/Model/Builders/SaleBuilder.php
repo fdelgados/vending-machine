@@ -63,6 +63,13 @@ final class SaleBuilder
         return $this;
     }
 
+    public function withCoins(Coin ...$coins): self
+    {
+        $this->coins = $coins;
+
+        return $this;
+    }
+
     public function withProductId(ProductId $productId): self
     {
         $this->productId = $productId;

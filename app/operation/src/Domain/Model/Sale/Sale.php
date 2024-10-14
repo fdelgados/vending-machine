@@ -75,4 +75,9 @@ final class Sale
     {
         return $this->productId;
     }
+
+    public function isCancelled(): bool
+    {
+        return $this->state->isCancelled();
+    }
 }

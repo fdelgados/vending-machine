@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Operation\Application\AddCredit;
 
-use VendingMachine\Common\Domain\ChangeDispenser;
+use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Domain\Coin;
 use VendingMachine\Common\Result;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
@@ -12,7 +12,7 @@ final readonly class AddCreditService
 {
     public function __construct(
         private SaleRepository $saleRepository,
-        private ChangeDispenser $changeDispenser
+        private ChangeStockControl $changeStockControl
     ) {
     }
 
@@ -26,7 +26,7 @@ final readonly class AddCreditService
         $sale->addCredit($coin);
 
         $this->saleRepository->save($sale);
-        $this->changeDispenser->addCoins($coin, 1);
+        $this->changeStockControl->addCoins($coin, 1);
 
         return Result::success($sale->getCredit());
     }

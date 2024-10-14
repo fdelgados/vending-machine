@@ -6,29 +6,34 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Common\Domain\Coin;
+use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Domain\CoinStock;
+use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeStockControl;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
-use VendingMachine\Operation\Domain\Service\ChangeCalculator;
+use VendingMachine\Operation\Domain\Service\ChangeDispenser;
 
-final class ChangeCalculatorTest extends TestCase
+final class ChangeDispenserTest extends TestCase
 {
     #[Test]
     #[DataProvider('change')]
     public function calculate_withAvailableCoins_shouldReturnCorrectChange(float $credit, array $availableCoins, array $expectedChange): void
     {
-        $changeCalculator = $this->createChangeCalculator($availableCoins);
+        $changeDispenser = $this->createChangeDispenser($availableCoins);
 
-        $result = $changeCalculator->calculate(new Credit($credit));
+        $result = $changeDispenser->dispense(new Credit($credit));
 
-        self::assertEquals($expectedChange, $result->getValue());
+        /** @var CoinCollection $coinCollection */
+        $coinCollection = $result->getValue();
+
+        self::assertEquals($expectedChange, $coinCollection->toArray());
     }
 
     #[Test]
     public function calculate_withNotEnoughAvailableCoins_shouldReturnAFailureResult(): void
     {
-        $changeCalculator = $this->createChangeCalculator(['1.00' => 0, '0.25' => 1, '0.10' => 0, '0.05' => 0]);
+        $changeCalculator = $this->createChangeDispenser(['1.00' => 0, '0.25' => 1, '0.10' => 0, '0.05' => 0]);
 
-        $result = $changeCalculator->calculate(new Credit(1.0));
+        $result = $changeCalculator->dispense(new Credit(1.0));
 
         self::assertTrue($result->isFailure());
         self::assertEquals('not_enough_change', $result->getErrorCode());
@@ -44,22 +49,20 @@ final class ChangeCalculatorTest extends TestCase
         ];
     }
 
-    private function createChangeCalculator(array $availableCoins): ChangeCalculator
+    private function createChangeDispenser(array $availableCoins): ChangeDispenser
     {
-        return new class($availableCoins) extends ChangeCalculator {
-            private array $availableCoins = [];
-
+        $changeStockControl = new class($availableCoins) extends InMemoryChangeStockControl {
             public function __construct(array $availableCoins)
             {
+                $coins = [];
                 foreach ($availableCoins as $value => $quantity) {
-                    $this->availableCoins[$value] = new CoinStock(new Coin((float) $value), $quantity);
+                    $coins[$value] = new CoinStock(new Coin((float) $value), $quantity);
                 }
-            }
 
-            protected function getAvailableCoins(): array
-            {
-                return $this->availableCoins;
+                parent::__construct($coins);
             }
         };
+
+        return new ChangeDispenser($changeStockControl);
     }
 }
