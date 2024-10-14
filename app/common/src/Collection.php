@@ -61,6 +61,13 @@ abstract class Collection implements Countable, IteratorAggregate
         };
     }
 
+    public function each(callable $fn): void
+    {
+        foreach ($this->items as $item) {
+            $fn($item);
+        }
+    }
+
     public function add(mixed $value): void
     {
         if (!$this->isOfExpectedType($value)) {
@@ -75,6 +82,11 @@ abstract class Collection implements Countable, IteratorAggregate
     public function count(): int
     {
         return count($this->items);
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return !empty($this->items);
     }
 
     private function isOfExpectedType(mixed $value): bool

@@ -2,28 +2,28 @@
 
 namespace VendingMachine\Operation\Domain\Model\Sale;
 
-use DateTimeImmutable;
 use VendingMachine\Common\Domain\Coin;
+use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Domain\Money;
 use VendingMachine\Common\Domain\ProductId;
 
 final class Sale
 {
     private readonly SaleId $id;
-    private readonly DateTimeImmutable $startedAt;
-    private array $coins;
+    private CoinCollection $coins;
     private Credit $credit;
     private SaleState $state;
     private ?ProductId $productId;
 
-    public function __construct(SaleId $saleId)
+    public function __construct(SaleId $saleId, CoinCollection $coins)
     {
+        ensure($coins->isNotEmpty(), 'You must insert at least one coin to start a sale.');
+
         $this->id = $saleId;
-        $this->startedAt = new DateTimeImmutable();
         $this->state = SaleState::IN_PROGRESS;
-        $this->coins = [];
-        $this->credit = new Credit(0.0);
         $this->productId = null;
+
+        $this->setCredit($coins);
     }
 
     public function getId(): SaleId
@@ -31,12 +31,15 @@ final class Sale
         return $this->id;
     }
 
-    public function addCredit(Coin $coin): void
+    public function setCredit(CoinCollection $coins): void
     {
-        precondition($this->state->isInProgress(), 'The sale is not in progress credits cannot be added.');
+        precondition($coins->isNotEmpty(), 'You must insert at least one coin to add credit.');
 
-        $this->coins[] = $coin;
-        $this->credit = $this->credit->plus($coin);
+        $this->credit = Credit::zero();
+        $coins->each(
+            fn (Coin $coin) => $this->credit = $this->credit->plus($coin)
+        );
+        $this->coins = $coins;
     }
 
     public function getCredit(): Credit
@@ -44,10 +47,7 @@ final class Sale
         return $this->credit;
     }
 
-    /**
-     * @return Coin[]
-     */
-    public function getAvailableCoins(): array
+    public function getAvailableCoins(): CoinCollection
     {
         return $this->coins;
     }
@@ -79,5 +79,10 @@ final class Sale
     public function isCancelled(): bool
     {
         return $this->state->isCancelled();
+    }
+
+    public function getState(): SaleState
+    {
+        return $this->state;
     }
 }

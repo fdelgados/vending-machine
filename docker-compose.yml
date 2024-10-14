@@ -10,6 +10,11 @@ services:
       - db
     networks:
       - vending-machine-network
+    environment:
+      - DB_HOST=db
+      - DB_NAME=vending_machine
+      - DB_USER=root
+      - DB_PASSWORD=
     command: tail -f /dev/null
 
   db:

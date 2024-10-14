@@ -6,12 +6,10 @@ use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Tests\VendingMachine\Common\Domain\CoinBuilder;
 use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeStockControl;
 use VendingMachine\Operation\Application\AddCredit\AddCreditCommand;
 use VendingMachine\Operation\Application\AddCredit\AddCreditService;
-use VendingMachine\Operation\Domain\Model\Sale\Credit;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;
 
 final class AddCreditServiceTest extends TestCase
@@ -35,34 +33,35 @@ final class AddCreditServiceTest extends TestCase
     {
         $result = $this->addCreditService->add($command);
 
-        self::assertTrue($result->isSuccess());
-        self::assertInstanceOf(Credit::class, $result->getValue());
-        self::assertTrue($result->getValue()->isGreaterThan(Credit::zero()));
+        self::assertTrue($result->getCredit() > 0);
     }
 
     #[Test]
     #[DataProvider('validCommands')]
     public function add_withValidCommand_increasesTheChangeDispenserStock(AddCreditCommand $command): void
     {
-        $coin = CoinBuilder::aCoin()->ofValue($command->getCoinValue())->build();
-        $stockBefore = $this->changeStockControl->getStockOfCoin($coin);
+        $stockBefore = $this->changeStockControl->getTotalCoins();
 
         $this->addCreditService->add($command);
 
-        $stockAfter = $this->changeStockControl->getStockOfCoin($coin);
+        $stockAfter = $this->changeStockControl->getTotalCoins();
 
         self::assertTrue($stockAfter > $stockBefore);
     }
 
     public static function validCommands(): array
     {
-        $validCoins = [0.05, 0.10, 0.25, 1.0];
         $faker = Factory::create();
 
+        $validCoins = [0.05, 0.10, 0.25, 1.0];
+        $coinValues = [];
         $commands = [];
-        foreach ($validCoins as $coin) {
-            $commands[] = [new AddCreditCommand($coin, null)];
-            $commands[] = [new AddCreditCommand($coin, $faker->uuid())];
+
+        for ($i = 0; $i < 5; $i++) {
+            for ($j = 0; $j < 5; $j++) {
+                $coinValues[] = $faker->randomElement($validCoins);
+            }
+            $commands[] = [new AddCreditCommand(...$coinValues)];
         }
 
         return $commands;

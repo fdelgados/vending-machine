@@ -11,11 +11,6 @@ final class CoinCollection extends Collection
         parent::__construct(...$coins);
     }
 
-    public static function empty()
-    {
-
-    }
-
     protected function getType(): string
     {
         return Coin::class;

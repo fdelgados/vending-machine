@@ -4,12 +4,7 @@ namespace VendingMachine\Common\Domain;
 
 interface ChangeStockControl
 {
-    const COINS = [
-        '0.05' => 100,
-        '0.10' => 50,
-        '0.25' => 20,
-        '1.00' => 10,
-    ];
+    public function getTotalCoins(): int;
 
     public function getAvailableCoins(): array;
 

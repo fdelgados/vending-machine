@@ -3,21 +3,23 @@
 namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
 
 use Tests\VendingMachine\Common\Domain\CoinBuilder;
+use Tests\VendingMachine\Common\Domain\CoinCollectionBuilder;
 use VendingMachine\Common\Domain\Coin;
+use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Domain\ProductId;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 
 final class SaleBuilder
 {
-    /** @var array<Coin> */
-    private array $coins = [];
+    private CoinCollection $coins;
     private SaleId $id;
     private bool $isCancelled = false;
     private ?ProductId $productId = null;
 
     private function __construct()
     {
+        $this->coins = new CoinCollection();
         $this->id = SaleIdMother::random();
     }
 
@@ -43,7 +45,7 @@ final class SaleBuilder
         $numberOfCoins = rand(1, 5);
 
         for ($i = 0; $i < $numberOfCoins; $i++) {
-            $this->coins[] = CoinBuilder::aCoin()->build();
+            $this->coins->add(CoinBuilder::aCoin()->build());
         }
 
         return $this;
@@ -58,14 +60,14 @@ final class SaleBuilder
 
     public function withCoin(Coin $coin): self
     {
-        $this->coins[] = $coin;
+        $this->coins->add($coin);
 
         return $this;
     }
 
     public function withCoins(Coin ...$coins): self
     {
-        $this->coins = $coins;
+        $this->coins = new CoinCollection(...$coins);
 
         return $this;
     }
@@ -79,16 +81,19 @@ final class SaleBuilder
 
     public function withCreditOf(float $credit): self
     {
-        $this->coins[] = CoinBuilder::aCoin()->ofValue($credit)->build();
+        $this->coins->add(CoinBuilder::aCoin()->ofValue($credit)->build());
 
         return $this;
     }
 
     public function build(): Sale
     {
-        $sale = new Sale($this->id);
+        $coins = $this->coins->isNotEmpty()
+            ? $this->coins
+            : CoinCollectionBuilder::aCoinCollection()->withAnyCoin()->build();
 
-        $this->addCredits($sale);
+        $sale = new Sale($this->id, $coins);
+
         if ($this->productId) {
             $sale->selectProduct($this->productId);
         }
@@ -98,12 +103,5 @@ final class SaleBuilder
         }
 
         return $sale;
-    }
-
-    private function addCredits(Sale $sale): void
-    {
-        foreach ($this->coins as $coin) {
-            $sale->addCredit($coin);
-        }
     }
 }

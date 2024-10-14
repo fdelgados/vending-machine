@@ -25,6 +25,11 @@ class InMemoryChangeStockControl implements ChangeStockControl
         return $this->coins;
     }
 
+    public function getTotalCoins(): int
+    {
+        return array_sum(array_map(fn (CoinStock $coinStock) => $coinStock->getQuantity(), $this->coins));
+    }
+
     public function getStockOfCoin(Coin $coin): int
     {
         return $this->coins[(string) $coin]->getQuantity();

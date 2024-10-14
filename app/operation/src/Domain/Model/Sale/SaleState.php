@@ -17,4 +17,15 @@ enum SaleState
     {
         return $this === self::CANCELLED;
     }
+
+    public static function fromName(string $name): self
+    {
+        foreach (self::cases() as $case) {
+            if ($case->name === $name) {
+                return $case;
+            }
+        }
+
+        throw new \ValueError("Invalid sale state name: $name");
+    }
 }

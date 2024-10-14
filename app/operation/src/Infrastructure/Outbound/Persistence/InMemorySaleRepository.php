@@ -16,11 +16,6 @@ final class InMemorySaleRepository implements SaleRepository
         $this->sales = $sales;
     }
 
-    public function findOrCreateNewSale(SaleId $saleId): Sale
-    {
-        return $this->sales[$saleId->getValue()] ?? new Sale($this->nextIdentity());
-    }
-
     public function save(Sale $sale): void
     {
         $this->sales[$sale->getId()->getValue()] = $sale;

@@ -4,17 +4,15 @@ namespace VendingMachine\Operation\Application\AddCredit;
 
 final readonly class AddCreditCommand
 {
-    public function __construct(private float $coinValue, private ?string $saleId)
+    private array $coinValues;
+
+    public function __construct(float ...$coinValues)
     {
+        $this->coinValues = $coinValues;
     }
 
-    public function getCoinValue(): float
+    public function getCoinValues(): array
     {
-        return $this->coinValue;
-    }
-
-    public function getSaleId(): ?string
-    {
-        return $this->saleId;
+        return $this->coinValues;
     }
 }
