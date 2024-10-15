@@ -5,7 +5,7 @@ namespace VendingMachine\Common;
 use Throwable;
 
 /**
- * Class Result
+ * Class Result<T>
  *
  * @template T
  *
@@ -86,11 +86,12 @@ class Result implements \Stringable
      */
     final public function getErrorCode(): string
     {
-        if (is_null($this->error)) {
-            return '';
-        }
-
         return $this->isFailure() ? $this->error->getCode() : '';
+    }
+
+    final public function getErrorMessage(): string
+    {
+        return $this->isFailure() ? $this->error->getDescription() : '';
     }
 
     /**
