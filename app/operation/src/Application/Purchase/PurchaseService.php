@@ -2,10 +2,15 @@
 
 namespace VendingMachine\Operation\Application\Purchase;
 
+use VendingMachine\Common\Domain\Coin;
+use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Domain\ProductId;
+use VendingMachine\Common\Error;
 use VendingMachine\Common\Result;
 use VendingMachine\Operation\Domain\Errors;
+use VendingMachine\Operation\Domain\Model\Product\Product;
 use VendingMachine\Operation\Domain\Model\Product\ProductRepository;
+use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;
 use VendingMachine\Operation\Domain\Service\PurchaseProcessor;
@@ -34,8 +39,32 @@ final readonly class PurchaseService
             return Result::failure(Errors::productNotFound());
         }
 
+        $result = $this->purchaseProcessor->purchase($sale, $product);
+
+        return $result->match(
+            success: fn (CoinCollection $change) => $this->handleSuccess($sale, $product, $change),
+            failure: fn (Error $error) => $this->handleFailure($sale, $result)
+        );
+    }
+
+    private function handleSuccess(Sale $sale, Product $product, CoinCollection $change): Result
+    {
+        $this->saleRepository->save($sale);
+        $this->productRepository->save($product);
+
+        $purchaseResult = new PurchaseResult(
+            (string) $product->getName(),
+            $change->map(fn (Coin $coin) => $coin->getAmount())
+        );
+
+        return Result::success($purchaseResult);
+    }
+
+    private function handleFailure(Sale $sale, Result $result): Result
+    {
+        $sale->cancel();
         $this->saleRepository->save($sale);
 
-        return $this->purchaseProcessor->purchase($sale, $product);
+        return $result;
     }
 }

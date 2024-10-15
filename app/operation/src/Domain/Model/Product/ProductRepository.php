@@ -9,4 +9,6 @@ interface ProductRepository
     public function productOfId(ProductId $productId): ?Product;
 
     public function save(Product $product): void;
+
+    public function findAll(): array;
 }

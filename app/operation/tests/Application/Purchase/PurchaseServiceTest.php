@@ -8,6 +8,7 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Tests\VendingMachine\Common\Domain\CoinCollectionBuilder;
 use Tests\VendingMachine\Common\Domain\ProductIdMother;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleIdMother;
@@ -70,7 +71,7 @@ final class PurchaseServiceTest extends TestCase
     public function purchase_whenPurchaseProcessorReturnsFailure_returnFailureResult(Result $failure): void
     {
         $sale = $this->createASale();
-        $command = $this->createCommand($sale->getId(), $sale->getProductId());
+        $command = $this->createCommand($sale->getId(), ProductIdMother::oneOf('1', '2', '3'));
 
         $this->purchaseProcessor->shouldReceive('purchase')->andReturn($failure);
 
@@ -80,12 +81,28 @@ final class PurchaseServiceTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('purchaseProcessorFailures')]
+    public function purchase_whenPurchaseProcessorReturnsFailure_saleIsCancelled(Result $failure): void
+    {
+        $sale = $this->createASale();
+        $command = $this->createCommand($sale->getId(), ProductIdMother::oneOf('1', '2', '3'));
+
+        $this->purchaseProcessor->shouldReceive('purchase')->andReturn($failure);
+
+        $this->purchaseService->purchase($command);
+
+        self::assertTrue($sale->isCancelled());
+    }
+
+    #[Test]
     public function purchase_whenPurchaseProcessorReturnsSuccess_returnSuccessResult(): void
     {
         $sale = $this->createASale();
-        $command = $this->createCommand($sale->getId(), $sale->getProductId());
+        $command = $this->createCommand($sale->getId(), ProductIdMother::oneOf('1', '2', '3'));
 
-        $this->purchaseProcessor->shouldReceive('purchase')->andReturn(Result::success());
+        $this->purchaseProcessor
+            ->shouldReceive('purchase')
+            ->andReturn(Result::success(CoinCollectionBuilder::aCoinCollection()->build()));
 
         $result = $this->purchaseService->purchase($command);
 
@@ -114,12 +131,10 @@ final class PurchaseServiceTest extends TestCase
     private function createASale(): Sale
     {
         $saleId = SaleIdMother::random();
-        $productId = ProductIdMother::ofId('1');
 
         $sale = SaleBuilder::aSale()
             ->ofId($saleId)
             ->withCredit()
-            ->withProductId($productId)
             ->build();
 
         $this->saleRepository->save($sale);

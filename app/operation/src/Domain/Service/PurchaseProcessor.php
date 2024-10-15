@@ -3,6 +3,7 @@
 namespace VendingMachine\Operation\Domain\Service;
 
 use VendingMachine\Common\Domain\ChangeStockControl;
+use VendingMachine\Common\Domain\CoinCollection;
 use VendingMachine\Common\Result;
 use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Product\Product;
@@ -16,6 +17,7 @@ class PurchaseProcessor
     ) {
     }
 
+    /** @return Result<CoinCollection> */
     public function purchase(Sale $sale, Product $product): Result
     {
         if ($product->isOutOfStock()) {
@@ -31,8 +33,7 @@ class PurchaseProcessor
             return Result::failure(Errors::notEnoughChange());
         }
 
-        $sale->selectProduct($product->getId());
-        $sale->deductCredit($product->getPrice());
+        $sale->complete($product->getId(), $product->getPrice());
         $product->decreaseStock();
 
         return Result::success($this->changeDispenser->dispense($sale->getCredit()));

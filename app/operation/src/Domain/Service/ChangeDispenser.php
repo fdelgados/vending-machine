@@ -35,7 +35,7 @@ class ChangeDispenser
         $coin = $coinStock->getCoin();
         while ($coinStock->getQuantity() > 0 && $credit->isGreaterOrEqual($coin)) {
             $credit = $credit->minus($coin);
-            $coinStock->remove(1);
+            $this->changeStockControl->removeCoins($coin, 1);
             $change->add($coin);
         }
 

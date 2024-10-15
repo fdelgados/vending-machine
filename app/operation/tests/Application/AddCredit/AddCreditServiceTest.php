@@ -6,6 +6,7 @@ use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleIdMother;
 use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeStockControl;
 use VendingMachine\Operation\Application\AddCredit\AddCreditCommand;
@@ -61,7 +62,8 @@ final class AddCreditServiceTest extends TestCase
             for ($j = 0; $j < 5; $j++) {
                 $coinValues[] = $faker->randomElement($validCoins);
             }
-            $commands[] = [new AddCreditCommand(...$coinValues)];
+            $commands[] = [new AddCreditCommand(null, ...$coinValues)];
+            $commands[] = [new AddCreditCommand(SaleIdMother::random()->getValue(), ...$coinValues)];
         }
 
         return $commands;

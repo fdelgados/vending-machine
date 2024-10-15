@@ -22,24 +22,26 @@ final class Sale
         $this->id = $saleId;
         $this->state = SaleState::IN_PROGRESS;
         $this->productId = null;
+        $this->credit = Credit::zero();
+        $this->coins = new CoinCollection();
 
-        $this->setCredit($coins);
+        $this->addCredit($coins);
+    }
+
+    public function addCredit(CoinCollection $coins): void
+    {
+        precondition($this->state->isInProgress(), 'The sale is not in progress and cannot be cancelled.');
+        precondition($coins->isNotEmpty(), 'You must insert at least one coin to add credit.');
+
+        $coins->each(
+            fn (Coin $coin) => $this->credit = $this->credit->plus($coin)
+        );
+        $this->coins = $this->coins->merge($coins);
     }
 
     public function getId(): SaleId
     {
         return $this->id;
-    }
-
-    public function setCredit(CoinCollection $coins): void
-    {
-        precondition($coins->isNotEmpty(), 'You must insert at least one coin to add credit.');
-
-        $this->credit = Credit::zero();
-        $coins->each(
-            fn (Coin $coin) => $this->credit = $this->credit->plus($coin)
-        );
-        $this->coins = $coins;
     }
 
     public function getCredit(): Credit
@@ -59,16 +61,13 @@ final class Sale
         $this->state = SaleState::CANCELLED;
     }
 
-    public function selectProduct(ProductId $productId): void
+    public function complete(ProductId $productId, Money $price): void
     {
         precondition($this->state->isInProgress(), 'The sale is not in progress and products cannot be added.');
 
         $this->productId = $productId;
-    }
-
-    public function deductCredit(Money $money): void
-    {
-        $this->credit = $this->credit->minus($money);
+        $this->credit = $this->credit->minus($price);
+        $this->state = SaleState::COMPLETED;
     }
 
     public function getProductId(): ?ProductId
