@@ -2,44 +2,19 @@
 
 namespace VendingMachine\Common;
 
-use Countable;
-use IteratorAggregate;
-use Traversable;
-
-abstract class Collection implements Countable, IteratorAggregate
+/**
+ * Class Collection<T>
+ *
+ * @template T
+ */
+abstract class Collection extends Sequence
 {
-    private array $items;
-
+    /** @param T ...$items */
     public function __construct(mixed ...$items)
     {
         ensure($this->typesAreExpected(...$items), 'All items must be of type ' . $this->getType());
 
         $this->items = $items;
-    }
-
-    private function typesAreExpected(mixed ...$items): bool
-    {
-        if (empty($items)) {
-            return true;
-        }
-
-        return array_reduce(
-            $items,
-            fn($carry, $item) => $carry && $this->isOfExpectedType($item),
-            true
-        );
-    }
-
-    abstract protected function getType(): string;
-
-    public function getIterator(): Traversable
-    {
-        return new \ArrayIterator($this->items);
-    }
-
-    public function toArray(): array
-    {
-        return $this->items;
     }
 
     public function map(callable $fn): Collection
@@ -48,7 +23,14 @@ abstract class Collection implements Countable, IteratorAggregate
 
         $type = $items ? gettype($items[0]) : $this->getType();
 
+        /**
+         * @template T
+         * @extends Collection<T>
+         */
         return new class($type, ...$items) extends Collection {
+            /**
+             * @param T ...$items
+             */
             public function __construct(private readonly string $type, ...$items)
             {
                 parent::__construct(...$items);
@@ -61,6 +43,11 @@ abstract class Collection implements Countable, IteratorAggregate
         };
     }
 
+    public function merge(Collection $collection): Collection
+    {
+        return new static(...array_merge($this->items, $collection->items));
+    }
+
     public function each(callable $fn): void
     {
         foreach ($this->items as $item) {
@@ -68,6 +55,7 @@ abstract class Collection implements Countable, IteratorAggregate
         }
     }
 
+    /** @param T $value */
     public function add(mixed $value): void
     {
         if (!$this->isOfExpectedType($value)) {
@@ -77,36 +65,5 @@ abstract class Collection implements Countable, IteratorAggregate
         }
 
         $this->items[] = $value;
-    }
-
-    public function count(): int
-    {
-        return count($this->items);
-    }
-
-    public function isNotEmpty(): bool
-    {
-        return !empty($this->items);
-    }
-
-    private function isOfExpectedType(mixed $value): bool
-    {
-        $type = $this->getType();
-
-        return match ($type) {
-            'array' => is_array($value),
-            'bool', 'boolean' => is_bool($value),
-            'callable' => is_callable($value),
-            'float', 'double' => is_float($value),
-            'int', 'integer' => is_int($value),
-            'null' => $value === null,
-            'numeric' => is_numeric($value),
-            'object' => is_object($value),
-            'resource' => is_resource($value),
-            'scalar' => is_scalar($value),
-            'string' => is_string($value),
-            'mixed' => true,
-            default => $value instanceof $type,
-        };
     }
 }
