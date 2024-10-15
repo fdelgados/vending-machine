@@ -1,11 +1,17 @@
 # Vending Machine Challenge
 
+## Requirements
+In order to run this application, you need to have Docker and Docker Compose installed on your machine, as well as Make.
+ 
 ## Description
 This is a simple vending machine program that allows a user to select a product and pay for it. The vending machine will then dispense the product and any change due.
 
 ## Installation
 
 1. Clone the repository
+```bash
+git clone git@github.com:fdelgados/vending-machine.git
+```
 2. Start the Docker container and install dependencies:
 ```bash
 make init
