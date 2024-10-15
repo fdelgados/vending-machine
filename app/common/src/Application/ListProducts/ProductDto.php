@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Operation\Application\ListProducts;
+namespace VendingMachine\Common\Application\ListProducts;
 
 final readonly class ProductDto implements \Stringable
 {

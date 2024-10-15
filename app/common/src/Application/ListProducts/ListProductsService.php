@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Operation\Application\ListProducts;
+namespace VendingMachine\Common\Application\ListProducts;
 
 use VendingMachine\Operation\Domain\Model\Product\Product;
 use VendingMachine\Operation\Domain\Model\Product\ProductRepository;

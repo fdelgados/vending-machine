@@ -1,14 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
+namespace Tests\VendingMachine\Common\Domain;
 
 use Faker\Factory;
 use Faker\Generator;
-use Tests\VendingMachine\Common\Domain\ProductIdMother;
 use VendingMachine\Common\Domain\ProductId;
-use VendingMachine\Operation\Domain\Model\Product\Name;
-use VendingMachine\Operation\Domain\Model\Product\Price;
-use VendingMachine\Operation\Domain\Model\Product\Product;
+use VendingMachine\Common\Domain\Product\Name;
+use VendingMachine\Common\Domain\Product\Price;
+use VendingMachine\Common\Domain\Product\Product;
 
 final class ProductBuilder
 {

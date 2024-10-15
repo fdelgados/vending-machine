@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Operation\Domain\Model\Product;
+namespace VendingMachine\Common\Domain\Product;
 
 final readonly class Name implements \Stringable
 {

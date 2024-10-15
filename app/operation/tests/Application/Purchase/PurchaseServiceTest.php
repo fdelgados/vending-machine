@@ -13,6 +13,7 @@ use Tests\VendingMachine\Common\Domain\ProductIdMother;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleIdMother;
 use VendingMachine\Common\Domain\ProductId;
+use VendingMachine\Common\Infrastructure\Outbound\Persistence\InMemoryProductRepository;
 use VendingMachine\Common\Result;
 use VendingMachine\Operation\Application\Purchase\PurchaseCommand;
 use VendingMachine\Operation\Application\Purchase\PurchaseService;
@@ -20,7 +21,6 @@ use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 use VendingMachine\Operation\Domain\Service\PurchaseProcessor;
-use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemoryProductRepository;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;
 
 final class PurchaseServiceTest extends TestCase

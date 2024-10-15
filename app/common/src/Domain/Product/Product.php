@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Operation\Domain\Model\Product;
+namespace VendingMachine\Common\Domain\Product;
 
 use VendingMachine\Common\Domain\ProductId;
 

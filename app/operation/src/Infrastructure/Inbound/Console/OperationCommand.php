@@ -8,12 +8,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use VendingMachine\Common\Application\ListProducts\ListProductsService;
+use VendingMachine\Common\Application\ListProducts\ProductDto;
 use VendingMachine\Operation\Application\AddCredit\AddCreditService;
 use VendingMachine\Operation\Application\AddCredit\AddCreditCommand;
 use VendingMachine\Operation\Application\CancelSale\CancelCommand;
 use VendingMachine\Operation\Application\CancelSale\CancelSaleService;
-use VendingMachine\Operation\Application\ListProducts\ListProductsService;
-use VendingMachine\Operation\Application\ListProducts\ProductDto;
 use VendingMachine\Operation\Application\Purchase\PurchaseCommand;
 use VendingMachine\Operation\Application\Purchase\PurchaseService;
 

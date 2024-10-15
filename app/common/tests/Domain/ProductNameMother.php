@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Tests\VendingMachine\Operation\Domain\Model\Builders;
+namespace Tests\VendingMachine\Common\Domain;
 
 use Faker\Factory;
-use VendingMachine\Operation\Domain\Model\Product\Name;
+use VendingMachine\Common\Domain\Product\Name;
 
 final class ProductNameMother
 {

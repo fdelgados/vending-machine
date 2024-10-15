@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Operation\Infrastructure\Outbound\Persistence;
+namespace VendingMachine\Common\Infrastructure\Outbound\Persistence;
 
 use ReflectionClass;
 use VendingMachine\Common\Domain\ProductId;
+use VendingMachine\Common\Domain\Product\Name;
+use VendingMachine\Common\Domain\Product\Price;
+use VendingMachine\Common\Domain\Product\Product;
+use VendingMachine\Common\Domain\Product\ProductRepository;
 use VendingMachine\Lib\Doctrine\DbalService;
-use VendingMachine\Operation\Domain\Model\Product\Name;
-use VendingMachine\Operation\Domain\Model\Product\Price;
-use VendingMachine\Operation\Domain\Model\Product\Product;
-use VendingMachine\Operation\Domain\Model\Product\ProductRepository;
 
-final class DbalProductService extends DbalService implements ProductRepository
+final class DbalProductRepository extends DbalService implements ProductRepository
 {
     public function productOfId(ProductId $productId): ?Product
     {

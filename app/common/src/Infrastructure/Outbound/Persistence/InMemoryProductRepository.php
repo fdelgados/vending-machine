@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Operation\Infrastructure\Outbound\Persistence;
+namespace VendingMachine\Common\Infrastructure\Outbound\Persistence;
 
 use VendingMachine\Common\Domain\ProductId;
-use VendingMachine\Operation\Domain\Model\Product\Name;
-use VendingMachine\Operation\Domain\Model\Product\Price;
-use VendingMachine\Operation\Domain\Model\Product\Product;
-use VendingMachine\Operation\Domain\Model\Product\ProductRepository;
+use VendingMachine\Common\Domain\Product\Name;
+use VendingMachine\Common\Domain\Product\Price;
+use VendingMachine\Common\Domain\Product\Product;
+use VendingMachine\Common\Domain\Product\ProductRepository;
 
 final class InMemoryProductRepository implements ProductRepository
 {

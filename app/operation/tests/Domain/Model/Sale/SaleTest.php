@@ -6,8 +6,8 @@ use DomainException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Tests\VendingMachine\Common\Domain\CoinCollectionBuilder;
+use Tests\VendingMachine\Common\Domain\PriceMother;
 use Tests\VendingMachine\Common\Domain\ProductIdMother;
-use Tests\VendingMachine\Operation\Domain\Model\Builders\PriceMother;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
 
