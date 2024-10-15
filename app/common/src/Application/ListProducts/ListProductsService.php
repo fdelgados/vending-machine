@@ -25,7 +25,12 @@ final class ListProductsService
             $productId = $product->getId()->value();
             $productMap->add(
                 $productId,
-                new ProductDto($productId, (string) $product->getName(), $product->getPrice()->getAmount())
+                new ProductDto(
+                    $productId,
+                    (string) $product->getName(),
+                    $product->getPrice()->getAmount(),
+                    $product->getAvailableStock()
+                )
             );
         }
 

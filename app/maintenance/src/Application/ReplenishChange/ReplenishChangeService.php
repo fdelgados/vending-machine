@@ -4,7 +4,7 @@ namespace VendingMachine\Maintenance\Application\ReplenishChange;
 
 use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Domain\Coin;
-use VendingMachine\Maintenance\Domain\Quantity;
+use VendingMachine\Common\Domain\Quantity;
 
 final readonly class ReplenishChangeService
 {

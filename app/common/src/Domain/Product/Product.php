@@ -3,6 +3,7 @@
 namespace VendingMachine\Common\Domain\Product;
 
 use VendingMachine\Common\Domain\ProductId;
+use VendingMachine\Common\Domain\Quantity;
 
 final class Product
 {
@@ -51,5 +52,10 @@ final class Product
         precondition($this->availableStock > 0, 'Product is out of stock');
 
         $this->availableStock--;
+    }
+
+    public function increaseStock(Quantity $quantity): void
+    {
+        $this->availableStock += $quantity->getValue();
     }
 }

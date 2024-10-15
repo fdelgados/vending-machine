@@ -28,6 +28,12 @@ abstract class Map extends Sequence
         $this->items[$key] = $value;
     }
 
+    /** @return ?T */
+    public function get(string $key): mixed
+    {
+        return $this->items[$key] ?? null;
+    }
+
     public function map(callable $fn): Map
     {
         $items = [];
