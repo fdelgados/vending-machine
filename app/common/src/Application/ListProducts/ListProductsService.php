@@ -2,8 +2,8 @@
 
 namespace VendingMachine\Common\Application\ListProducts;
 
-use VendingMachine\Operation\Domain\Model\Product\Product;
-use VendingMachine\Operation\Domain\Model\Product\ProductRepository;
+use VendingMachine\Common\Domain\Product\Product;
+use VendingMachine\Common\Domain\Product\ProductRepository;
 
 final class ListProductsService
 {
