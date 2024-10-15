@@ -30,4 +30,9 @@ final class InMemoryProductRepository implements ProductRepository
     {
         $this->products[$product->getId()->value()] = $product;
     }
+
+    public function findAll(): array
+    {
+        return $this->products;
+    }
 }

@@ -54,7 +54,7 @@ class InMemoryChangeStockControl implements ChangeStockControl
         return $creditInCents === 0;
     }
 
-    private function calculateRemainingCredit(int $credit, CoinStock $coinStock): float
+    private function calculateRemainingCredit(int $credit, CoinStock $coinStock): int
     {
         $coin = $coinStock->getCoin();
         $coinValue = (int) round($coin->getAmount() * 100);
