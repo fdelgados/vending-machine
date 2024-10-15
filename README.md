@@ -35,3 +35,21 @@ Or you can run the tests of just one context, passing the parameter "s=" to run 
 make test s=suite_name
 ```
 There are one suite for each context of the application: `common`, `operation` and `maintenance`.
+
+### Running the application
+There are two ways to use the application:
+
+#### Using the machine as a user
+To use the machine as a user and buy a drink, you can run the following command:
+```bash
+make operate
+```
+
+#### Using the machine as service person
+You can refill the machine with drinks or coins, or even get the total amount of money in the machine. To do that, you can run the following command:
+```bash
+make maintenance
+```
+In both cases, follow the machine's instructions.
+
+Enjoy!

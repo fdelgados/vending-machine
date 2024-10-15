@@ -31,3 +31,9 @@ sh: check-container
 
 console: check-container
 	@$(CONSOLE) $(c)
+
+operate: check-container
+	@$(CONSOLE) vending-machine:operate
+
+maintenance: check-container
+	@$(CONSOLE) vending-machine:maintenance
