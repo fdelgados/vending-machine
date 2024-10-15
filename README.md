@@ -16,15 +16,11 @@ git clone git@github.com:fdelgados/vending-machine.git
 ```bash
 make init
 ```
-3. Run the application:
-```bash
-make init
-```
-4. To stop the application:
+3. To stop the application:
 ```bash
 make stop
 ```
-5. To destroy the application:
+4. To destroy the application:
 ```bash
 make destroy
 ```
