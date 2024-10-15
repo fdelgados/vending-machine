@@ -56,9 +56,18 @@ final class Sale
 
     public function cancel(): void
     {
-        precondition($this->state->isInProgress(), 'The sale is not in progress and cannot be cancelled.');
+        precondition($this->isCancellable(), 'The sale cannot be cancelled.');
+
+        if ($this->state->isCancelled()) {
+            return;
+        }
 
         $this->state = SaleState::CANCELLED;
+    }
+
+    private function isCancellable(): bool
+    {
+        return $this->state->isInProgress() || $this->state->isCancelled();
     }
 
     public function complete(ProductId $productId, Money $price): void

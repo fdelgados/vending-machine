@@ -81,20 +81,6 @@ final class PurchaseServiceTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('purchaseProcessorFailures')]
-    public function purchase_whenPurchaseProcessorReturnsFailure_saleIsCancelled(Result $failure): void
-    {
-        $sale = $this->createASale();
-        $command = $this->createCommand($sale->getId(), ProductIdMother::oneOf('1', '2', '3'));
-
-        $this->purchaseProcessor->shouldReceive('purchase')->andReturn($failure);
-
-        $this->purchaseService->purchase($command);
-
-        self::assertTrue($sale->isCancelled());
-    }
-
-    #[Test]
     public function purchase_whenPurchaseProcessorReturnsSuccess_returnSuccessResult(): void
     {
         $sale = $this->createASale();

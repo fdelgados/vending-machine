@@ -43,7 +43,7 @@ final readonly class PurchaseService
 
         return $result->match(
             success: fn (CoinCollection $change) => $this->handleSuccess($sale, $product, $change),
-            failure: fn (Error $error) => $this->handleFailure($sale, $result)
+            failure: fn (Error $error) => $result
         );
     }
 
@@ -58,13 +58,5 @@ final readonly class PurchaseService
         );
 
         return Result::success($purchaseResult);
-    }
-
-    private function handleFailure(Sale $sale, Result $result): Result
-    {
-        $sale->cancel();
-        $this->saleRepository->save($sale);
-
-        return $result;
     }
 }

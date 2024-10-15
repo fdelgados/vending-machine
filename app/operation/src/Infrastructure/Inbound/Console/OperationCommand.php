@@ -60,9 +60,7 @@ final class OperationCommand extends Command
             $productId = $this->selectProduct($input, $output);
 
             if ($productId === null) {
-                $result = $this->cancelSaleService->cancel(new CancelCommand($saleId));
-
-                $io->success((string) $result->getValue());
+                $this->cancelSale($input, $output, $saleId);
 
                 return true;
             }
@@ -86,6 +84,8 @@ final class OperationCommand extends Command
                 }
 
                 $io->error($result->getErrorMessage());
+
+                $this->cancelSale($input, $output, $saleId);
 
                 return true;
             }
@@ -147,11 +147,20 @@ final class OperationCommand extends Command
         return $product === 'x' ? null : (string) $product;
     }
 
+    private function cancelSale(InputInterface $input, OutputInterface $output, string $saleId): void
+    {
+        $io = new SymfonyStyle($input, $output);
+
+        $result = $this->cancelSaleService->cancel(new CancelCommand($saleId));
+
+        $io->success('Your money: ' . $result->getValue());
+    }
+
     private function askToContinue(InputInterface $input, OutputInterface $output): bool
     {
         $helper = $this->getHelper('question');
         $question = new ChoiceQuestion(
-            'Would you like to perform another operation?',
+            'Would you like to select another drink?',
             ['y' => 'Yes', 'n' => 'No'],
             'n'
         );
