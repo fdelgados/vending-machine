@@ -89,6 +89,11 @@ class Result implements \Stringable
         return $this->isFailure() ? $this->error->getCode() : '';
     }
 
+    /**
+     * Gets the error message of the Result.
+     *
+     * @return string The error message if the Result is a failure, an empty string otherwise.
+     */
     final public function getErrorMessage(): string
     {
         return $this->isFailure() ? $this->error->getDescription() : '';
