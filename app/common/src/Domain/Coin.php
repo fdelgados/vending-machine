@@ -4,6 +4,7 @@ namespace VendingMachine\Common\Domain;
 
 final class Coin implements Money
 {
+    private const float EPSILON = 0.00001;
     private const array ALLOWED_VALUES = [0.05, 0.10, 0.25, 1.0];
 
     private float $value;
@@ -13,6 +14,11 @@ final class Coin implements Money
         ensure(in_array($value, self::ALLOWED_VALUES), 'Invalid coin value');
 
         $this->value = $value;
+    }
+
+    public function equals(Coin $other): bool
+    {
+        return abs($this->value - $other->value) < self::EPSILON;
     }
 
     public function getAmount(): float

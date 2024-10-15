@@ -8,11 +8,11 @@ final class CoinStock
     private Coin $coin;
     private int $quantity;
 
-    public function __construct(Coin $coin, int $quantity)
+    public function __construct(string $id, Coin $coin, int $quantity)
     {
         ensure($quantity >= 0, 'Quantity must be greater than 0');
 
-        $this->id = (string) $coin;
+        $this->id = $id;
         $this->coin = $coin;
         $this->quantity = $quantity;
     }
@@ -25,6 +25,11 @@ final class CoinStock
     public function getCoin(): Coin
     {
         return $this->coin;
+    }
+
+    public function getCoinValue(): float
+    {
+        return $this->coin->getAmount();
     }
 
     public function getQuantity(): int

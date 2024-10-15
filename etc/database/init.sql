@@ -26,13 +26,15 @@ CREATE TABLE sales
 
 CREATE TABLE change_stock
 (
-    value    CHAR(4) PRIMARY KEY,
+    id  CHAR(1) PRIMARY KEY,
+    value    DECIMAL(3, 2) NOT NULL,
     quantity INT NOT NULL DEFAULT 0,
-    CONSTRAINT check_quantity CHECK (quantity >= 0)
+    CONSTRAINT check_quantity CHECK (quantity >= 0),
+    CONSTRAINT unique_value UNIQUE (value)
 ) DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
 
-INSERT INTO change_stock (value, quantity) VALUES ('1.00', 10);
-INSERT INTO change_stock (value, quantity) VALUES ('0.25', 40);
-INSERT INTO change_stock (value, quantity) VALUES ('0.10', 100);
-INSERT INTO change_stock (value, quantity) VALUES ('0.05', 200);
+INSERT INTO change_stock (id, value, quantity) VALUES ('1', 1.00, 10);
+INSERT INTO change_stock (id, value, quantity) VALUES ('2', 0.25, 40);
+INSERT INTO change_stock (id, value, quantity) VALUES ('3', 0.10, 100);
+INSERT INTO change_stock (id, value, quantity) VALUES ('4', 0.05, 200);

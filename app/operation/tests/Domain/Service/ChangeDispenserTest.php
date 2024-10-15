@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Common\Domain\Coin;
 use VendingMachine\Common\Domain\CoinStock;
-use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeStockControl;
+use VendingMachine\Common\Infrastructure\Outbound\Persistence\InMemoryChangeStockControl;
 use VendingMachine\Operation\Domain\InsufficientChangeException;
 use VendingMachine\Operation\Domain\Model\Sale\Credit;
 use VendingMachine\Operation\Domain\Service\ChangeDispenser;
@@ -51,9 +51,17 @@ final class ChangeDispenserTest extends TestCase
         $changeStockControl = new class($availableCoins) extends InMemoryChangeStockControl {
             public function __construct(array $availableCoins)
             {
+                $map = [
+                    '0.05' => '4',
+                    '0.10' => '3',
+                    '0.25' => '2',
+                    '1.00' => '1',
+                ];
+
                 $coins = [];
                 foreach ($availableCoins as $value => $quantity) {
-                    $coins[$value] = new CoinStock(new Coin((float) $value), $quantity);
+                    $id = $map[$value];
+                    $coins[(string) $id] = new CoinStock((string) $id, new Coin((float) $value), $quantity);
                 }
 
                 parent::__construct($coins);

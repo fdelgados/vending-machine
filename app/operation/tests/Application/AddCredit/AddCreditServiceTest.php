@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleIdMother;
 use VendingMachine\Common\Domain\ChangeStockControl;
-use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeStockControl;
+use VendingMachine\Common\Infrastructure\Outbound\Persistence\InMemoryChangeStockControl;
 use VendingMachine\Operation\Application\AddCredit\AddCreditCommand;
 use VendingMachine\Operation\Application\AddCredit\AddCreditService;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\InMemorySaleRepository;

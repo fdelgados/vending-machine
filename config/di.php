@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
 use VendingMachine\Common\Domain\ChangeStockControl;
-use VendingMachine\Common\Infrastructure\Outbound\DbalChangeStockControl;
 use VendingMachine\Common\Domain\Product\ProductRepository;
+use VendingMachine\Common\Infrastructure\Outbound\Persistence\DbalChangeStockControl;
 use VendingMachine\Common\Infrastructure\Outbound\Persistence\DbalProductRepository;
 use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;
 use VendingMachine\Operation\Infrastructure\Outbound\Persistence\DbalSaleService;

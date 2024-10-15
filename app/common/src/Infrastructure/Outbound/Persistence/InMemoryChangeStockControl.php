@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Common\Infrastructure\Outbound;
+namespace VendingMachine\Common\Infrastructure\Outbound\Persistence;
 
 use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Domain\Coin;
@@ -13,10 +13,10 @@ class InMemoryChangeStockControl implements ChangeStockControl
     public function __construct(array $coins = [])
     {
         $this->coins = empty($coins) ? [
-            '1.00' => new CoinStock(new Coin(1.00), 10),
-            '0.25' => new CoinStock(new Coin(0.25), 20),
-            '0.10' => new CoinStock(new Coin(0.10), 25),
-            '0.05' => new CoinStock(new Coin(0.05), 50),
+            '1' => new CoinStock('1', new Coin(1.00), 10),
+            '2' => new CoinStock('2', new Coin(0.25), 20),
+            '3' => new CoinStock('3', new Coin(0.10), 25),
+            '4' => new CoinStock('4', new Coin(0.05), 50),
         ] : $coins;
     }
 
@@ -30,18 +30,17 @@ class InMemoryChangeStockControl implements ChangeStockControl
         return array_sum(array_map(fn (CoinStock $coinStock) => $coinStock->getQuantity(), $this->coins));
     }
 
-    public function getStockOfCoin(Coin $coin): int
-    {
-        return $this->coins[(string) $coin]->getQuantity();
-    }
-
     public function addCoins(Coin $coin, int $quantity): void
     {
-        $coinStock = $this->coins[(string) $coin] ?? new CoinStock($coin, 0);
+        $coinStock = $this->searchCoin($coin);
+
+        if ($coinStock === null) {
+            return;
+        }
 
         $coinStock->add($quantity);
 
-        $this->coins[(string) $coin] = $coinStock;
+        $this->coins[$coinStock->getId()] = $coinStock;
     }
 
     public function hasEnoughChange(float $credit): bool
@@ -68,13 +67,27 @@ class InMemoryChangeStockControl implements ChangeStockControl
 
     public function removeCoins(Coin $coin, int $quantity): void
     {
-        if (!isset($this->coins[(string) $coin])) {
+        $coinStock = $this->searchCoin($coin);
+        if ($coinStock === null) {
             return;
         }
 
-        $coinStock = $this->coins[(string) $coin];
         $coinStock->remove($quantity);
 
-        $this->coins[(string) $coin] = $coinStock;
+        $this->coins[$coinStock->getId()] = $coinStock;
+    }
+
+    private function searchCoin(Coin $coin): ?CoinStock
+    {
+        $filtered = array_filter(
+            $this->coins,
+            fn (CoinStock $coinStock) => $coin->equals($coinStock->getCoin())
+        );
+
+        if (empty($filtered)) {
+            return null;
+        }
+
+        return reset($filtered);
     }
 }

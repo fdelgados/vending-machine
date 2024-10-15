@@ -9,7 +9,7 @@ use Tests\VendingMachine\Common\Domain\CoinBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleBuilder;
 use Tests\VendingMachine\Operation\Domain\Model\Builders\SaleIdMother;
 use VendingMachine\Common\Domain\Coin;
-use VendingMachine\Common\Infrastructure\Outbound\InMemoryChangeStockControl;
+use VendingMachine\Common\Infrastructure\Outbound\Persistence\InMemoryChangeStockControl;
 use VendingMachine\Operation\Application\CancelSale\CancelCommand;
 use VendingMachine\Operation\Application\CancelSale\CancelSaleService;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;

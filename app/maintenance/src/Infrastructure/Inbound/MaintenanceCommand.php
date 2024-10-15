@@ -10,8 +10,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use VendingMachine\Common\Application\ListProducts\ListProductsService;
 use VendingMachine\Common\Application\ListProducts\ProductDto;
 use VendingMachine\Common\Application\ListProducts\ProductMap;
+use VendingMachine\Maintenance\Application\ReplenishChange\ReplenishChangeCommand;
+use VendingMachine\Maintenance\Application\ReplenishChange\ReplenishChangeService;
 use VendingMachine\Maintenance\Application\Restock\RestockCommand;
 use VendingMachine\Maintenance\Application\Restock\RestockService;
+use VendingMachine\Maintenance\Application\ViewChange\CoinDto;
+use VendingMachine\Maintenance\Application\ViewChange\CoinMap;
+use VendingMachine\Maintenance\Application\ViewChange\ViewChangeService;
 
 final class MaintenanceCommand extends Command
 {
@@ -19,7 +24,9 @@ final class MaintenanceCommand extends Command
 
     public function __construct(
         private ListProductsService $listProductsService,
-        private RestockService $restockService
+        private RestockService $restockService,
+        private ViewChangeService $viewChangeService,
+        private ReplenishChangeService $replenishChangeService
     ) {
         parent::__construct();
     }
@@ -140,8 +147,61 @@ final class MaintenanceCommand extends Command
         $io->table(['ID', 'Name', 'Price', 'Stock'], $rows->toArray());
     }
 
-    private function replenishChange(InputInterface $input, OutputInterface $output)
+    private function replenishChange(InputInterface $input, OutputInterface $output): void
     {
-        $output->writeln('Replenishing change');
+        $io = new SymfonyStyle($input, $output);
+
+        do {
+            $change = $this->viewChangeService->view();
+
+            $this->printAvailableCoins($input, $output, $change);
+
+            $choices = $change->map(fn (CoinDto $coinDto, $id) => $coinDto->getValue())->toArray();
+            $choices['x'] = 'Exit';
+
+            $question = new ChoiceQuestion('Please select an option:', $choices, 'x');
+
+            $question->setErrorMessage('Invalid option [%s]');
+            $option = $io->askQuestion($question);
+
+            var_dump($option);
+            var_dump(array_search($option, $choices));
+
+            $this->replenish($input, $output, $change->get($option));
+        } while ($option != 'x');
+    }
+
+    private function printAvailableCoins(InputInterface $input, OutputInterface $output, CoinMap $coins): void
+    {
+        $io = new SymfonyStyle($input, $output);
+
+        $io->section('Replenish the change');
+        $rows = $coins->map(fn (CoinDto $coin) => [$coin->getValue(), $coin->getQuantity()]);
+
+        $io->table(['Value', 'Quantity'], $rows->toArray());
+    }
+
+    private function replenish(InputInterface $input, OutputInterface $output, ?CoinDto $coin): void
+    {
+        if ($coin === null) {
+            return;
+        }
+
+        $io = new SymfonyStyle($input, $output);
+
+        $io->section(sprintf('Replenish %s coins. Current quantity: %s', $coin->getValue(), $coin->getQuantity()));
+
+        $quantity = $io->ask(
+            'Quantity', null,
+            function ($quantity) {
+                if (!is_numeric($quantity) || $quantity < 1) {
+                    throw new \RuntimeException('Quantity must be a number greater than 0');
+                }
+
+                return (int) $quantity;
+            }
+        );
+
+        $this->replenishChangeService->replenish(new ReplenishChangeCommand($coin->getValue(), $quantity));
     }
 }

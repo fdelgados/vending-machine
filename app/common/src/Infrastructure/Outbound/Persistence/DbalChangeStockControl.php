@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Common\Infrastructure\Outbound;
+namespace VendingMachine\Common\Infrastructure\Outbound\Persistence;
 
 use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Domain\Coin;
@@ -29,6 +29,7 @@ final class DbalChangeStockControl extends DbalService implements ChangeStockCon
 
         foreach ($rows as $row) {
             $availableCoins[] = new CoinStock(
+                $row['id'],
                 new Coin((float) $row['value']),
                 (int) $row['quantity']
             );
@@ -43,19 +44,8 @@ final class DbalChangeStockControl extends DbalService implements ChangeStockCon
 
         $this->connection->executeStatement($sql, [
             'quantity' => $quantity,
-            'value' => $coin->__toString(),
+            'value' => $coin->getAmount(),
         ]);
-    }
-
-    public function getStockOfCoin(Coin $coin): int
-    {
-        $result = $this->getQueryBuilder()->select('quantity')
-            ->from('change_stock')
-            ->where('value = :value')
-            ->setParameter('value', $coin->__toString())
-            ->fetchOne();
-
-        return (int) $result;
     }
 
     public function removeCoins(Coin $coin, int $quantity): void
@@ -64,7 +54,7 @@ final class DbalChangeStockControl extends DbalService implements ChangeStockCon
 
         $this->connection->executeStatement($sql, [
             'quantity' => $quantity,
-            'value' => $coin->__toString(),
+            'value' => $coin->getAmount(),
         ]);
     }
 
