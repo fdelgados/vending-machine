@@ -52,6 +52,26 @@ final class SaleTest extends TestCase
     }
 
     #[Test]
+    public function cancel_shouldResetCreditToZero(): void
+    {
+        $sale = SaleBuilder::aSale()->build();
+
+        $sale->cancel();
+
+        self::assertEquals(0, $sale->getCredit()->getAmount());
+    }
+
+    #[Test]
+    public function cancel_shouldEmptyTheAvailableCoins(): void
+    {
+        $sale = SaleBuilder::aSale()->build();
+
+        $sale->cancel();
+
+        self::assertCount(0, $sale->getAvailableCoins());
+    }
+
+    #[Test]
     public function addCredit_withValidCoin_shouldIncrementCredit(): void
     {
         $sale = SaleBuilder::aSale()->withCredit()->build();
@@ -82,6 +102,5 @@ final class SaleTest extends TestCase
             DomainException::class,
             fn () => $cancelledSale->addCredit(CoinCollectionBuilder::aCoinCollection()->build())
         );
-        self::assertGreaterThan(0, $cancelledSale->getAvailableCoins()->count());
     }
 }

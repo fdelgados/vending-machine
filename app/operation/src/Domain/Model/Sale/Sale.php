@@ -62,6 +62,8 @@ final class Sale
             return;
         }
 
+        $this->credit = Credit::zero();
+        $this->coins = new CoinCollection();
         $this->state = SaleState::CANCELLED;
     }
 
