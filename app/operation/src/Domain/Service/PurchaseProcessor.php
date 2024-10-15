@@ -2,10 +2,10 @@
 
 namespace VendingMachine\Operation\Domain\Service;
 
-use VendingMachine\Common\Domain\Product\Product;
 use VendingMachine\Common\Domain\ChangeStockControl;
 use VendingMachine\Common\Domain\CoinCollection;
-use VendingMachine\Common\Result;
+use VendingMachine\Common\Domain\Product\Product;
+use VendingMachine\Lib\Result;
 use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 

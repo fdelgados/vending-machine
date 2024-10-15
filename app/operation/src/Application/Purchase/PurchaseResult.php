@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Operation\Application\Purchase;
 
-use VendingMachine\Common\Collection;
+use VendingMachine\Lib\Collection;
 
 final readonly class PurchaseResult
 {

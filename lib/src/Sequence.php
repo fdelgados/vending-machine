@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace VendingMachine\Common;
+namespace VendingMachine\Lib;
 
 use Countable;
 use IteratorAggregate;
-use Traversable;
 use Stringable;
+use Traversable;
 
 abstract class Sequence implements Countable, IteratorAggregate, Stringable
 {

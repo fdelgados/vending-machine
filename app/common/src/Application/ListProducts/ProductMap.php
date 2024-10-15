@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Common\Application\ListProducts;
 
-use VendingMachine\Common\Map;
+use VendingMachine\Lib\Map;
 
 final class ProductMap extends Map
 {

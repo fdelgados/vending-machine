@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Maintenance\Application\ViewChange;
 
-use VendingMachine\Common\Map;
+use VendingMachine\Lib\Map;
 
 final class CoinMap extends Map
 {

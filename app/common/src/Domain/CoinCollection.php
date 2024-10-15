@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Common\Domain;
 
-use VendingMachine\Common\Collection;
+use VendingMachine\Lib\Collection;
 
 final class CoinCollection extends Collection
 {

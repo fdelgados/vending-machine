@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Operation\Domain;
 
-use VendingMachine\Common\Error;
+use VendingMachine\Lib\Error;
 
 final class Errors
 {

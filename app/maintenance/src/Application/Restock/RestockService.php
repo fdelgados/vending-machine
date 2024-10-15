@@ -5,7 +5,7 @@ namespace VendingMachine\Maintenance\Application\Restock;
 use VendingMachine\Common\Domain\Product\ProductRepository;
 use VendingMachine\Common\Domain\ProductId;
 use VendingMachine\Common\Domain\Quantity;
-use VendingMachine\Common\Result;
+use VendingMachine\Lib\Result;
 use VendingMachine\Operation\Domain\Errors;
 
 final readonly class RestockService

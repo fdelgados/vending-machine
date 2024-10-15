@@ -4,12 +4,12 @@ namespace VendingMachine\Operation\Application\Purchase;
 
 use VendingMachine\Common\Domain\Coin;
 use VendingMachine\Common\Domain\CoinCollection;
-use VendingMachine\Common\Domain\ProductId;
-use VendingMachine\Common\Error;
-use VendingMachine\Common\Result;
-use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Common\Domain\Product\Product;
 use VendingMachine\Common\Domain\Product\ProductRepository;
+use VendingMachine\Common\Domain\ProductId;
+use VendingMachine\Lib\Error;
+use VendingMachine\Lib\Result;
+use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Sale\Sale;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;

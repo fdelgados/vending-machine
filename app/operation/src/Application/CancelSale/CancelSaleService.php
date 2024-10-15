@@ -3,7 +3,7 @@
 namespace VendingMachine\Operation\Application\CancelSale;
 
 use VendingMachine\Common\Domain\Coin;
-use VendingMachine\Common\Result;
+use VendingMachine\Lib\Result;
 use VendingMachine\Operation\Domain\Errors;
 use VendingMachine\Operation\Domain\Model\Sale\SaleId;
 use VendingMachine\Operation\Domain\Model\Sale\SaleRepository;
