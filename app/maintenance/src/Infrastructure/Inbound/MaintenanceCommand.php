@@ -23,10 +23,10 @@ final class MaintenanceCommand extends Command
     private const string DEFAULT_NAME = 'vending-machine:maintenance';
 
     public function __construct(
-        private ListProductsService $listProductsService,
-        private RestockService $restockService,
-        private ViewChangeService $viewChangeService,
-        private ReplenishChangeService $replenishChangeService
+        private readonly ListProductsService $listProductsService,
+        private readonly RestockService $restockService,
+        private readonly ViewChangeService $viewChangeService,
+        private readonly ReplenishChangeService $replenishChangeService
     ) {
         parent::__construct();
     }
@@ -51,37 +51,28 @@ final class MaintenanceCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function operate(InputInterface $input, OutputInterface $output)
+    private function operate(InputInterface $input, OutputInterface $output): bool
     {
         $io = new SymfonyStyle($input, $output);
         $choices = [
             '1' => 'Restock products',
             '2' => 'Replenish change',
-            '3' => 'Exit',
+            'x' => 'Exit',
         ];
 
-        $question = new ChoiceQuestion('Please select an option:', $choices, '3');
+        $question = new ChoiceQuestion('Please select an option:', $choices, 'x');
 
         $question->setErrorMessage('Invalid option [%s]');
-        $option = array_search($io->askQuestion($question), $choices);
+        $option = $io->askQuestion($question);
 
-        switch ($option) {
-            case 1:
-                $this->restockProducts($input, $output);
-                break;
-            case 2:
-                $this->replenishChange($input, $output);
-                break;
-            case 3:
-                return false;
-            default:
-                $io->error('Invalid option');
-        }
-
-        return true;
+        return match ($option) {
+            'x' => false,
+            '1' => $this->restockProducts($input, $output),
+            '2' => $this->replenishChange($input, $output),
+        };
     }
 
-    private function restockProducts(InputInterface $input, OutputInterface $output): void
+    private function restockProducts(InputInterface $input, OutputInterface $output): bool
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -91,15 +82,16 @@ final class MaintenanceCommand extends Command
             $this->printProductList($input, $output, $products);
 
             $choices = $products->map(fn (ProductDto $product, $id) => $product->getName())->toArray();
-            $choices[] = 'Exit';
+            $choices['x'] = 'Exit';
 
-            $question = new ChoiceQuestion('Please select an option:', $choices, count($choices));
+            $question = new ChoiceQuestion('Please select an option:', $choices, 'x');
 
             $question->setErrorMessage('Invalid option [%s]');
-            $option = (string) array_search($io->askQuestion($question), $choices);
-
+            $option = $io->askQuestion($question);
             $this->restock($input, $output, $products->get($option));
-        } while ($option != count($choices));
+        } while ($option != 'x');
+
+        return true;
     }
 
     private function restock(InputInterface $input, OutputInterface $output, ?ProductDto $product): void
@@ -147,7 +139,7 @@ final class MaintenanceCommand extends Command
         $io->table(['ID', 'Name', 'Price', 'Stock'], $rows->toArray());
     }
 
-    private function replenishChange(InputInterface $input, OutputInterface $output): void
+    private function replenishChange(InputInterface $input, OutputInterface $output): bool
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -164,11 +156,10 @@ final class MaintenanceCommand extends Command
             $question->setErrorMessage('Invalid option [%s]');
             $option = $io->askQuestion($question);
 
-            var_dump($option);
-            var_dump(array_search($option, $choices));
-
             $this->replenish($input, $output, $change->get($option));
         } while ($option != 'x');
+
+        return true;
     }
 
     private function printAvailableCoins(InputInterface $input, OutputInterface $output, CoinMap $coins): void
